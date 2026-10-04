@@ -12,7 +12,9 @@ import SwiftData
 struct SpendlyApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Item.self,
+            CategoryModel.self,
+            TransactionModel.self,
+            BudgetModel.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
