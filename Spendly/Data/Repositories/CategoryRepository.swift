@@ -12,7 +12,7 @@ enum CategoryRepositoryError: Error {
     case categoryNotFound
 }
 
-final class SwiftDataCategoryRepository: CategoryRepository {
+final class CategoryRepository: CategoryRepositoryInterface {
     private let localDataSource: CategoryLocalDataSource
 
     init(localDataSource: CategoryLocalDataSource) {
