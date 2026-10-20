@@ -12,14 +12,14 @@ import SwiftData
 @Model
 final class BudgetModel {
     @Attribute(.unique) var id: UUID
-    var amount: Double
+	var amount: Decimal
     var period: BudgetPeriod
 
     var category: CategoryModel?
 
     init(
         id: UUID = UUID(),
-        amount: Double,
+		amount: Decimal,
         period: BudgetPeriod,
         category: CategoryModel? = nil
     ) {

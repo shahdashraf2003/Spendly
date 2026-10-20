@@ -13,7 +13,7 @@ import SwiftData
 @Model
 final class TransactionModel {
     @Attribute(.unique) var id: UUID
-    var amount: Double
+	var amount: Decimal
     var type: TransactionType
     var date: Date
     var note: String?
@@ -22,7 +22,7 @@ final class TransactionModel {
 
     init(
         id: UUID = UUID(),
-        amount: Double,
+		amount: Decimal,
         type: TransactionType,
         date: Date = Date(),
         note: String? = nil,
