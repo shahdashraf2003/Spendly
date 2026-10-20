@@ -9,7 +9,7 @@
 
 import Foundation
 
-protocol TransactionRepository {
+protocol TransactionRepositoryInterface {
     func fetchTransactions() throws -> [Transaction]
     func fetchTransaction(id: UUID) throws -> Transaction?
     func addTransaction(_ transaction: Transaction) throws
