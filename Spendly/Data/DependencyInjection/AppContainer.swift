@@ -25,6 +25,11 @@ final class AppContainer {
 	let updateCategoryUseCase: UpdateCategoryUseCase
 	let deleteCategoryUseCase: DeleteCategoryUseCase
 
+	let fetchBudgetsUseCase: FetchBudgetsUseCase
+	let addBudgetUseCase: AddBudgetUseCase
+	let updateBudgetUseCase: UpdateBudgetUseCase
+	let deleteBudgetUseCase: DeleteBudgetUseCase
+
     init(modelContext: ModelContext) {
         let transactionDataSource = TransactionLocalDataSource(
             modelContext: modelContext
@@ -80,6 +85,22 @@ final class AppContainer {
 
 		self.deleteCategoryUseCase = DeleteCategoryUseCase(
 			repository: categoryRepository
+		)
+
+		self.fetchBudgetsUseCase = FetchBudgetsUseCase(
+			repository: budgetRepository
+		)
+
+		self.addBudgetUseCase = AddBudgetUseCase(
+			repository: budgetRepository
+		)
+
+		self.updateBudgetUseCase = UpdateBudgetUseCase(
+			repository: budgetRepository
+		)
+
+		self.deleteBudgetUseCase = DeleteBudgetUseCase(
+			repository: budgetRepository
 		)
     }
 }
