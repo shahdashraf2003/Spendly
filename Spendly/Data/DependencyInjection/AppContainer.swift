@@ -15,6 +15,11 @@ final class AppContainer {
 	let categoryRepository: CategoryRepositoryInterface
 	let budgetRepository: BudgetRepositoryInterface
 
+	let fetchTransactionsUseCase: FetchTransactionsUseCase
+	let addTransactionUseCase: AddTransactionUseCase
+	let updateTransactionUseCase: UpdateTransactionUseCase
+	let deleteTransactionUseCase: DeleteTransactionUseCase
+
     init(modelContext: ModelContext) {
         let transactionDataSource = TransactionLocalDataSource(
             modelContext: modelContext
@@ -39,5 +44,21 @@ final class AppContainer {
         self.budgetRepository = BudgetRepository(
             localDataSource: budgetDataSource
         )
+		
+		self.fetchTransactionsUseCase = FetchTransactionsUseCase(
+			repository: transactionRepository
+		)
+
+		self.addTransactionUseCase = AddTransactionUseCase(
+			repository: transactionRepository
+		)
+
+		self.updateTransactionUseCase = UpdateTransactionUseCase(
+			repository: transactionRepository
+		)
+
+		self.deleteTransactionUseCase = DeleteTransactionUseCase(
+			repository: transactionRepository
+		)
     }
 }
