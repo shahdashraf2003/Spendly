@@ -1,0 +1,119 @@
+/* ===================================================
+   Localizable.strings — العربية
+   تطبيق Spendly
+   
+   هذا الملف يحتوي على كل النصوص بالعربية
+   كل مفتاح (key) له نظير بالإنجليزية في en.lproj/Localizable.strings
+   =================================================== */
+
+// MARK: - عام
+"app.name" = "سبندلي";
+"general.cancel" = "إلغاء";
+"general.done" = "تم";
+"general.delete" = "حذف";
+"general.save" = "حفظ";
+"general.edit" = "تعديل";
+"general.back" = "رجوع";
+"general.close" = "إغلاق";
+"general.add" = "إضافة";
+"general.ok" = "حسناً";
+"general.see_all" = "عرض الكل";
+"general.currency" = "ج.م";
+
+// MARK: - شريط التبويب
+"tab.home" = "الرئيسية";
+"tab.transactions" = "المعاملات";
+"tab.budgets" = "الميزانيات";
+"tab.profile" = "حسابي";
+
+// MARK: - الشاشة الرئيسية
+"home.greeting" = "صباح الخير، عمر";
+"home.balance" = "الرصيد الإجمالي";
+"home.income" = "الدخل";
+"home.expenses" = "المصروفات";
+"home.net" = "الصافي";
+"home.spending_overview" = "نظرة على الإنفاق";
+"home.of" = "من";
+"home.left" = "متبقي";
+"home.used" = "مستخدم";
+"home.categories_breakdown" = "الإنفاق حسب الفئة";
+"home.recent_transactions" = "أحدث المعاملات";
+"home.add_expense" = "إضافة مصروف";
+"home.add_income" = "إضافة دخل";
+"home.analytics" = "التحليلات";
+
+// MARK: - شاشة المعاملات
+"transactions.title" = "المعاملات";
+"transactions.search" = "بحث";
+"transactions.filter.all" = "الكل";
+"transactions.filter.income" = "الدخل";
+"transactions.filter.expense" = "المصروف";
+"transactions.empty.title" = "لا توجد معاملات";
+"transactions.empty.subtitle" = "جرّب بحثًا أو فلترًا آخر.";
+"transactions.today" = "اليوم";
+"transactions.yesterday" = "أمس";
+"transactions.added" = "تمت إضافة المعاملة";
+"transactions.deleted" = "تم حذف المعاملة";
+
+// MARK: - شيت إضافة معاملة
+"add_transaction.title" = "إضافة معاملة";
+"add_transaction.amount_placeholder" = "0";
+"add_transaction.amount_error" = "أدخل مبلغًا صحيحًا";
+"add_transaction.category_label" = "الفئة";
+"add_transaction.category_error" = "اختر فئة";
+"add_transaction.note_placeholder" = "ملاحظة (اختياري)";
+"add_transaction.date_label" = "التاريخ";
+"add_transaction.type.expense" = "مصروف";
+"add_transaction.type.income" = "دخل";
+
+// MARK: - شاشة الميزانيات
+"budgets.title" = "الميزانيات";
+"budgets.total" = "إجمالي الميزانية";
+"budgets.spent" = "المصروف";
+"budgets.remaining" = "المتبقي";
+"budgets.add" = "إضافة ميزانية";
+"budget.status.ok" = "ضمن الميزانية";
+"budget.status.warning" = "قريب من الحد";
+"budget.status.over" = "تجاوز الميزانية";
+
+// MARK: - شاشة التحليلات
+"analytics.title" = "التحليلات";
+"analytics.trend" = "اتجاه الإنفاق";
+"analytics.breakdown" = "توزيع الفئات";
+"analytics.net_savings" = "صافي المدخرات";
+"analytics.avg_daily" = "متوسط الإنفاق اليومي";
+"analytics.insight" = "الطعام أكبر فئة إنفاق بنسبة 37٪.";
+"analytics.period.week" = "أسبوع";
+"analytics.period.month" = "شهر";
+"analytics.period.year" = "سنة";
+
+// MARK: - شاشة الملف الشخصي
+"profile.title" = "حسابي";
+"profile.preferences" = "التفضيلات";
+"profile.currency" = "العملة";
+"profile.language" = "اللغة";
+"profile.appearance" = "المظهر";
+"profile.appearance.dark" = "داكن";
+"profile.appearance.light" = "فاتح";
+"profile.appearance.system" = "تلقائي";
+"profile.security" = "الأمان";
+"profile.face_id" = "Face ID";
+"profile.app_lock" = "قفل التطبيق";
+"profile.face_id_title" = "احمِ أموالك";
+"profile.face_id_desc" = "استخدم Face ID للحفاظ على خصوصية معلوماتك المالية.";
+"profile.notifications" = "الإشعارات";
+"profile.notif.payment_reminders" = "تذكير الدفعات";
+"profile.notif.budget_alerts" = "تنبيهات الميزانية";
+"profile.notif.monthly_summary" = "الملخص الشهري";
+"profile.data" = "البيانات";
+"profile.export" = "تصدير البيانات";
+"profile.import" = "استيراد البيانات";
+
+// MARK: - الفئات
+"category.food" = "الطعام";
+"category.shopping" = "التسوق";
+"category.transport" = "المواصلات";
+"category.bills" = "الفواتير";
+"category.entertainment" = "الترفيه";
+"category.income" = "الدخل";
+"category.other" = "أخرى";

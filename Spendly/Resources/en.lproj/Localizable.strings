@@ -1,0 +1,119 @@
+/* ===================================================
+   Localizable.strings — English
+   Spendly iOS App
+   
+   هذا الملف يحتوي على كل النصوص بالإنجليزية
+   كل مفتاح (key) له نظير بالعربي في ar.lproj/Localizable.strings
+   =================================================== */
+
+// MARK: - General
+"app.name" = "Spendly";
+"general.cancel" = "Cancel";
+"general.done" = "Done";
+"general.delete" = "Delete";
+"general.save" = "Save";
+"general.edit" = "Edit";
+"general.back" = "Back";
+"general.close" = "Close";
+"general.add" = "Add";
+"general.ok" = "OK";
+"general.see_all" = "See All";
+"general.currency" = "EGP";
+
+// MARK: - Tab Bar
+"tab.home" = "Home";
+"tab.transactions" = "Transactions";
+"tab.budgets" = "Budgets";
+"tab.profile" = "Profile";
+
+// MARK: - Home Screen
+"home.greeting" = "Good morning, Omar";
+"home.balance" = "Total Balance";
+"home.income" = "Income";
+"home.expenses" = "Expenses";
+"home.net" = "Net";
+"home.spending_overview" = "Spending Overview";
+"home.of" = "of";
+"home.left" = "left";
+"home.used" = "used";
+"home.categories_breakdown" = "Spending by Category";
+"home.recent_transactions" = "Recent Transactions";
+"home.add_expense" = "Add Expense";
+"home.add_income" = "Add Income";
+"home.analytics" = "Analytics";
+
+// MARK: - Transactions Screen
+"transactions.title" = "Transactions";
+"transactions.search" = "Search";
+"transactions.filter.all" = "All";
+"transactions.filter.income" = "Income";
+"transactions.filter.expense" = "Expense";
+"transactions.empty.title" = "No transactions found";
+"transactions.empty.subtitle" = "Try another search or filter.";
+"transactions.today" = "Today";
+"transactions.yesterday" = "Yesterday";
+"transactions.added" = "Transaction added";
+"transactions.deleted" = "Transaction deleted";
+
+// MARK: - Add Transaction Sheet
+"add_transaction.title" = "Add Transaction";
+"add_transaction.amount_placeholder" = "0";
+"add_transaction.amount_error" = "Enter a valid amount";
+"add_transaction.category_label" = "Category";
+"add_transaction.category_error" = "Choose a category";
+"add_transaction.note_placeholder" = "Note (optional)";
+"add_transaction.date_label" = "Date";
+"add_transaction.type.expense" = "Expense";
+"add_transaction.type.income" = "Income";
+
+// MARK: - Budgets Screen
+"budgets.title" = "Budgets";
+"budgets.total" = "Total Budget";
+"budgets.spent" = "Spent";
+"budgets.remaining" = "Remaining";
+"budgets.add" = "Add Budget";
+"budget.status.ok" = "Within budget";
+"budget.status.warning" = "Near limit";
+"budget.status.over" = "Over budget";
+
+// MARK: - Analytics Screen
+"analytics.title" = "Analytics";
+"analytics.trend" = "Spending trend";
+"analytics.breakdown" = "Category breakdown";
+"analytics.net_savings" = "Net Savings";
+"analytics.avg_daily" = "Avg. daily spend";
+"analytics.insight" = "Food is your largest category at 37% of spending.";
+"analytics.period.week" = "Week";
+"analytics.period.month" = "Month";
+"analytics.period.year" = "Year";
+
+// MARK: - Profile Screen
+"profile.title" = "Profile";
+"profile.preferences" = "Preferences";
+"profile.currency" = "Currency";
+"profile.language" = "Language";
+"profile.appearance" = "Appearance";
+"profile.appearance.dark" = "Dark";
+"profile.appearance.light" = "Light";
+"profile.appearance.system" = "System";
+"profile.security" = "Security";
+"profile.face_id" = "Face ID";
+"profile.app_lock" = "App Lock";
+"profile.face_id_title" = "Protect Your Finances";
+"profile.face_id_desc" = "Use Face ID to keep your financial information private.";
+"profile.notifications" = "Notifications";
+"profile.notif.payment_reminders" = "Payment Reminders";
+"profile.notif.budget_alerts" = "Budget Alerts";
+"profile.notif.monthly_summary" = "Monthly Summary";
+"profile.data" = "Data";
+"profile.export" = "Export Data";
+"profile.import" = "Import Data";
+
+// MARK: - Categories
+"category.food" = "Food";
+"category.shopping" = "Shopping";
+"category.transport" = "Transportation";
+"category.bills" = "Bills";
+"category.entertainment" = "Entertainment";
+"category.income" = "Income";
+"category.other" = "Other";
