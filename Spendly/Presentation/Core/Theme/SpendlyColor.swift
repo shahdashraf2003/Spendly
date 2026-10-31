@@ -32,9 +32,6 @@ extension Color {
     /// لون خلفية شريط التقدم (Track)
     /// فاتح: #e8e8ee | داكن: #2c2c36
     static let spTrack = Color("SpTrack")
-    
-    /// لون خلفية Stage (خلف الـ Phone في المعاينة)
-    static let spStage = Color("SpStage")
 
     // MARK: - ألوان التمييز (Accent)
     

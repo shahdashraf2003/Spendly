@@ -2,21 +2,11 @@
 //  AnalyticsView.swift
 //  Spendly
 //
-//  شاشة التحليلات
-//
-//  تعرض:
-//  - مفتاح الفترة (أسبوع / شهر / سنة)
-//  - مخطط شريطي للإنفاق الأسبوعي/الشهري
-//  - مخطط دائري لتوزيع الفئات
-//  - ملخص: صافي المدخرات + متوسط الإنفاق اليومي
-//  - نصيحة ذكية
-//
+
 
 import SwiftUI
-import Charts  // مكتبة Apple للرسوم البيانية (iOS 16+)
+import Charts
 
-// MARK: - AnalyticsPeriod
-// فترات التحليل
 
 enum AnalyticsPeriod: String, CaseIterable {
     case week  = "أسبوع"
@@ -28,16 +18,14 @@ enum AnalyticsPeriod: String, CaseIterable {
 
 struct AnalyticsView: View {
     
-    // MARK: - الخصائص
+
     
     let transactions: [Transaction]
     let categories: [Category]
     
     @State private var selectedPeriod = AnalyticsPeriod.month
     
-    // MARK: - الحسابات
-    
-    /// المصروفات حسب الفئة (للمخطط الدائري)
+
     private var expensesByCategory: [(Category, Decimal)] {
         categories
             .filter { $0.type == .expense }
@@ -50,17 +38,17 @@ struct AnalyticsView: View {
             .sorted { $0.1 > $1.1 }
     }
     
-    /// إجمالي المصروفات
+
     private var totalExpenses: Decimal {
         transactions.filter { $0.type == .expense }.reduce(0) { $0 + $1.amount }
     }
     
-    /// إجمالي الدخل
+
     private var totalIncome: Decimal {
         transactions.filter { $0.type == .income }.reduce(0) { $0 + $1.amount }
     }
     
-    /// ألوان الفئات في المخطط الدائري
+
     private let chartColors: [Color] = [
         .spAccent,
         Color(red: 0.23, green: 0.49, blue: 0.64),
@@ -68,8 +56,7 @@ struct AnalyticsView: View {
         Color(red: 0.48, green: 0.56, blue: 0.23),
         Color(red: 0.72, green: 0.42, blue: 0.69)
     ]
-    
-    // بيانات وهمية للمخطط الشريطي (ستُستبدل ببيانات حقيقية)
+
     private var barData: [Double] {
         switch selectedPeriod {
         case .week:  return [40, 65, 30, 80, 55, 90, 45]
@@ -78,36 +65,36 @@ struct AnalyticsView: View {
         }
     }
     
-    // MARK: - الواجهة
+
     
     var body: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 0) {
                 
-                // ── عنوان الصفحة ─────────────────────────────
+
                 Text("التحليلات")
                     .font(SpendlyFont.largeTitle)
                     .padding(.horizontal, SpendlySpacing.xl)
                     .padding(.top, 8)
                 
-                // ── مفتاح الفترة ─────────────────────────────
+
                 periodSegment
                     .padding(.horizontal, SpendlySpacing.xl)
                     .padding(.top, 12)
                 
-                // ── المخطط الشريطي ────────────────────────────
+
                 trendChart
                     .padding(.top, SpendlySpacing.xl)
                 
-                // ── المخطط الدائري ────────────────────────────
+
                 breakdownChart
                     .padding(.top, SpendlySpacing.xl)
                 
-                // ── ملخص الأرقام ─────────────────────────────
+
                 summaryNumbers
                     .padding(.top, SpendlySpacing.xl)
                 
-                // ── نصيحة ذكية ───────────────────────────────
+
                 insightCard
                     .padding(.top, SpendlySpacing.sm)
                     .padding(.bottom, SpendlySpacing.xxl)
@@ -116,7 +103,7 @@ struct AnalyticsView: View {
         .background(Color.spBackground)
     }
     
-    // MARK: - مفتاح الفترة
+
     
     private var periodSegment: some View {
         HStack(spacing: 3) {
@@ -260,7 +247,6 @@ struct AnalyticsView: View {
         .padding(.horizontal, SpendlySpacing.xl)
     }
     
-    // MARK: - نصيحة ذكية
     
     private var insightCard: some View {
         SpendlyCard {
@@ -275,8 +261,7 @@ struct AnalyticsView: View {
         .padding(.horizontal, SpendlySpacing.xl)
     }
     
-    // MARK: - الدوال المساعدة
-    
+
     private func percentage(_ amount: Decimal) -> String {
         guard totalExpenses > 0 else { return "0%" }
         let pct = Double(truncating: (amount / totalExpenses * 100) as NSDecimalNumber)
