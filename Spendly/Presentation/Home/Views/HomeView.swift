@@ -335,11 +335,4 @@ struct HomeView: View {
     }
 }
 
-// MARK: - Preview
-#Preview("الشاشة الرئيسية") {
-    // بيانات وهمية للمعاينة
-    NavigationStack {
-        Text("Preview requires AppContainer — see ContentView")
-    }
-    .background(Color.spBackground)
-}
+
