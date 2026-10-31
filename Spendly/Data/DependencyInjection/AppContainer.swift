@@ -33,6 +33,9 @@ final class AppContainer {
 	let transactionsViewModel: TransactionsViewModel
 	let categoriesViewModel: CategoriesViewModel
 	let budgetsViewModel: BudgetsViewModel
+	
+	/// ViewModel الشاشة الرئيسية — يجمع البيانات من كل الـ UseCases
+	let homeViewModel: HomeViewModel
 
     init(modelContext: ModelContext) {
         let transactionDataSource = TransactionLocalDataSource(
@@ -126,6 +129,13 @@ final class AppContainer {
 			addBudgetUseCase: addBudgetUseCase,
 			updateBudgetUseCase: updateBudgetUseCase,
 			deleteBudgetUseCase: deleteBudgetUseCase
+		)
+		
+		// ── HomeViewModel يجمع البيانات من كل الـ UseCases ──
+		self.homeViewModel = HomeViewModel(
+			fetchTransactionsUseCase: fetchTransactionsUseCase,
+			fetchBudgetsUseCase: fetchBudgetsUseCase,
+			fetchCategoriesUseCase: fetchCategoriesUseCase
 		)
     }
 }
