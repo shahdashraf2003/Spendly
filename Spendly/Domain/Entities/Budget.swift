@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Budget {
+struct Budget: Identifiable {
     let id: UUID
     let amount: Decimal
     let period: BudgetPeriod

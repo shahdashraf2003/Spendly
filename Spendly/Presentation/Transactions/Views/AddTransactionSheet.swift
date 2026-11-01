@@ -367,6 +367,3 @@ struct TransactionDetailSheet: View {
         .padding(.vertical, SpendlySpacing.md)
     }
 }
-
-// لتمكين sheet(item:) مع Transaction
-extension Transaction: Identifiable {}
