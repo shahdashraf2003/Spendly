@@ -14,6 +14,7 @@ final class CategoryLocalDataSource {
 
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
+        seedDefaultCategoriesIfNeeded()
     }
 
     func fetchCategories() throws -> [CategoryModel] {
@@ -21,7 +22,13 @@ final class CategoryLocalDataSource {
             sortBy: [SortDescriptor(\.name)]
         )
 
-        return try modelContext.fetch(descriptor)
+        var categories = try modelContext.fetch(descriptor)
+        if categories.isEmpty {
+            seedDefaultCategoriesIfNeeded()
+            categories = try modelContext.fetch(descriptor)
+        }
+
+        return categories
     }
 
     func fetchCategory(id: UUID) throws -> CategoryModel? {
@@ -42,5 +49,37 @@ final class CategoryLocalDataSource {
 
     func saveChanges() throws {
         try modelContext.save()
+    }
+
+    // MARK: - Seeding
+    func seedDefaultCategoriesIfNeeded() {
+        do {
+            let descriptor = FetchDescriptor<CategoryModel>()
+            let count = try modelContext.fetchCount(descriptor)
+            if count == 0 {
+                let defaultCategories: [(name: String, icon: String, type: CategoryType)] = [
+                    ("category.food", "🍽️", .expense),
+                    ("category.shopping", "🛍️", .expense),
+                    ("category.transport", "🚗", .expense),
+                    ("category.bills", "🧾", .expense),
+                    ("category.entertainment", "🎬", .expense),
+                    ("category.other", "📦", .expense),
+                    ("category.income", "💰", .income)
+                ]
+
+                for item in defaultCategories {
+                    let model = CategoryModel(
+                        name: item.name,
+                        icon: item.icon,
+                        type: item.type
+                    )
+                    modelContext.insert(model)
+                }
+
+                try modelContext.save()
+            }
+        } catch {
+            print("Failed to seed default categories: \(error)")
+        }
     }
 }

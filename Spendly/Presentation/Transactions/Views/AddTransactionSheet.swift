@@ -82,6 +82,7 @@ struct AddTransactionSheet: View {
                         .padding(.vertical, SpendlySpacing.sm)
                     }
                     
+
                     // ── اختيار الفئة ─────────────────────────
                     VStack(alignment: .leading, spacing: SpendlySpacing.sm) {
                         Text(locManager.localize("add_transaction.category_label"))
@@ -89,18 +90,26 @@ struct AddTransactionSheet: View {
                             .foregroundStyle(Color.spMuted)
                         
                         // Chips الفئات
-                        FlowLayout(spacing: SpendlySpacing.sm) {
-                            ForEach(availableCategories) { cat in
-                                CategoryChip(
-                                    category: cat,
-                                    isSelected: selectedCategory?.id == cat.id
-                                ) {
-                                    selectedCategory = cat
-                                    categoryError = false
+                        if availableCategories.isEmpty {
+                            Text(locManager.localize("general.empty_categories"))
+                                .font(SpendlyFont.body)
+                                .foregroundStyle(Color.spMuted)
+                                .padding(.vertical, SpendlySpacing.xs)
+                        } else {
+                            FlowLayout(spacing: SpendlySpacing.sm) {
+                                ForEach(availableCategories) { cat in
+                                    CategoryChip(
+                                        category: cat,
+                                        isSelected: selectedCategory?.id == cat.id
+                                    ) {
+                                        selectedCategory = cat
+                                        categoryError = false
+                                    }
                                 }
                             }
                         }
                         
+
                         // رسالة الخطأ
                         if categoryError {
                             Text("⚠ \(locManager.localize("add_transaction.category_error"))")

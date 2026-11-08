@@ -2,18 +2,9 @@
 //  ContentView.swift
 //  Spendly
 //
-//  الشاشة الجذر — تحتوي على شريط التبويب السفلي (TabBar)
-//
-//  كيف يعمل:
-//  1. TabView يعرض 4 شاشات: الرئيسية، المعاملات، الميزانيات، الملف الشخصي
-//  2. زر (+) في المنتصف يفتح شيت إضافة معاملة
-//  3. اللغة والثيم تنتقلان عبر Environment لكل الشاشات
-//
 
 import SwiftUI
 
-// MARK: - AppTab
-// تعداد التبويبات
 
 enum AppTab: Int, CaseIterable {
     case home         = 0
@@ -43,39 +34,24 @@ enum AppTab: Int, CaseIterable {
 // MARK: - ContentView
 
 struct ContentView: View {
-    
-    // MARK: - الخصائص
+
     
     let appContainer: AppContainer
     
     @Environment(LocalizationManager.self) private var locManager
-    
-    // MARK: - الحالة
-    
-    /// التبويب النشط حالياً
+
     @State private var selectedTab = AppTab.home
-    
-    /// هل نافذة إضافة معاملة مفتوحة؟
     @State private var showAddSheet = false
-    
-    /// وضع المظهر (فاتح / داكن / تلقائي)
     @State private var appearanceMode = AppearanceMode.system
-    
-    /// Toast
     @State private var toastMessage: String?
-    
-    // MARK: - الفئات (نحملها مرة واحدة)
     @State private var categories: [Category] = []
     
-    // MARK: - الواجهة
-    
+
     var body: some View {
         ZStack(alignment: .bottom) {
-            
-            // ── محتوى التبويبات ────────────────────────────
+
             TabView(selection: $selectedTab) {
-                
-                // ── الرئيسية ─────────────────────────────
+
                 NavigationStack {
                     HomeView(
                         viewModel: HomeViewModel(
@@ -90,7 +66,7 @@ struct ContentView: View {
                     Label(locManager.localize(AppTab.home.locKey), systemImage: AppTab.home.icon)
                 }
                 
-                // ── المعاملات ────────────────────────────
+
                 NavigationStack {
                     TransactionsView(
                         viewModel: appContainer.transactionsViewModel,
@@ -102,7 +78,7 @@ struct ContentView: View {
                     Label(locManager.localize(AppTab.transactions.locKey), systemImage: AppTab.transactions.icon)
                 }
                 
-                // ── الميزانيات ───────────────────────────
+
                 NavigationStack {
                     BudgetsView(
                         budgetsViewModel: appContainer.budgetsViewModel,
@@ -115,7 +91,7 @@ struct ContentView: View {
                     Label(locManager.localize(AppTab.budgets.locKey), systemImage: AppTab.budgets.icon)
                 }
                 
-                // ── الملف الشخصي ─────────────────────────
+
                 NavigationStack {
                     ProfileView(colorScheme: $appearanceMode)
                 }
@@ -124,24 +100,22 @@ struct ContentView: View {
                     Label(locManager.localize(AppTab.profile.locKey), systemImage: AppTab.profile.icon)
                 }
             }
-            .tint(Color.spAccent)  // لون التبويب النشط
-            
-            // ── زر + في المنتصف ────────────────────────────
-            // يطفو فوق شريط التبويب
+            .tint(Color.spAccent)
+
             addButton
         }
-        .preferredColorScheme(appearanceMode.colorScheme)  // تطبيق الثيم
+        .preferredColorScheme(appearanceMode.colorScheme)
         .toast(message: $toastMessage)
         .task {
-            // جلب الفئات مرة واحدة عند البداية
-            categories = (try? appContainer.fetchCategoriesUseCase.execute()) ?? []
+            loadCategories()
         }
         .sheet(isPresented: $showAddSheet) {
             AddTransactionSheet(
                 viewModel: appContainer.transactionsViewModel,
-                categories: categories
+                categories: categories.isEmpty ? ((try? appContainer.fetchCategoriesUseCase.execute()) ?? []) : categories
             ) { message in
                 toastMessage = message
+                loadCategories()
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                     toastMessage = nil
                 }
@@ -149,10 +123,13 @@ struct ContentView: View {
         }
     }
     
-    // MARK: - زر الإضافة
-    
+    private func loadCategories() {
+        categories = (try? appContainer.fetchCategoriesUseCase.execute()) ?? []
+    }
+
     private var addButton: some View {
         Button {
+            loadCategories()
             showAddSheet = true
         } label: {
             Image(systemName: "plus")
@@ -163,7 +140,7 @@ struct ContentView: View {
                 .clipShape(Circle())
                 .shadow(color: Color.spAccent.opacity(0.4), radius: 8, x: 0, y: 4)
         }
-        // ارفع الزر قليلاً فوق شريط التبويب
+
         .offset(y: -28)
         .ignoresSafeArea(.keyboard)
     }
