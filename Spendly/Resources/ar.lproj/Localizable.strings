@@ -56,6 +56,7 @@
 "transactions.filter.expense" = "المصروف";
 "transactions.empty.title" = "لا توجد معاملات";
 "transactions.empty.subtitle" = "جرّب بحثًا أو فلترًا آخر.";
+"transactions.empty.no_transactions" = "اضغط + لإضافة أول معاملة";
 "transactions.today" = "اليوم";
 "transactions.yesterday" = "أمس";
 "transactions.added" = "تمت إضافة المعاملة";

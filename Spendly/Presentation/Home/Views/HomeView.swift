@@ -292,7 +292,7 @@ struct HomeView: View {
                     EmptyStateView(
                         icon: "🧾",
                         title: locManager.localize("transactions.empty.title"),
-                        subtitle: locManager.localize("transactions.empty.subtitle")
+                        subtitle: locManager.localize("transactions.empty.no_transactions")
                     )
                 }
             } else {

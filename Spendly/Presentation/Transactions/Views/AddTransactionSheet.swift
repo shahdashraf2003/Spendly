@@ -71,7 +71,6 @@ struct AddTransactionSheet: View {
 
                     typeSegment
 
-                   \
                     AmountTextField(
                         text: $amountText,
                         hasError: amountError,

@@ -56,6 +56,7 @@
 "transactions.filter.expense" = "Expense";
 "transactions.empty.title" = "No transactions found";
 "transactions.empty.subtitle" = "Try another search or filter.";
+"transactions.empty.no_transactions" = "Tap + to add your first transaction";
 "transactions.today" = "Today";
 "transactions.yesterday" = "Yesterday";
 "transactions.added" = "Transaction added";

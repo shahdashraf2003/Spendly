@@ -129,17 +129,15 @@ struct TransactionsView: View {
 
     private var headerSection: some View {
         VStack(alignment: .leading, spacing: SpendlySpacing.sm) {
-
-
             Text(locManager.localize("transactions.title"))
                 .font(SpendlyFont.largeTitle)
                 .padding(.horizontal, SpendlySpacing.xl)
                 .padding(.top, 8)
 
-
-            searchBar
-
-            filterBar
+            if !viewModel.transactions.isEmpty {
+                searchBar
+                filterBar
+            }
         }
         .padding(.bottom, SpendlySpacing.sm)
     }
@@ -176,15 +174,18 @@ struct TransactionsView: View {
     @ViewBuilder
     private var listOrEmptyState: some View {
         if filteredTransactions.isEmpty {
-            Spacer()
-                .frame(maxHeight: .infinity)
-                .overlay {
-                    EmptyStateView(
-                        icon: "🧾",
-                        title: locManager.localize("transactions.empty.title"),
-                        subtitle: locManager.localize("transactions.empty.subtitle")
-                    )
-                }
+            VStack {
+                Spacer()
+                EmptyStateView(
+                    icon: "🧾",
+                    title: locManager.localize("transactions.empty.title"),
+                    subtitle: viewModel.transactions.isEmpty
+                        ? locManager.localize("transactions.empty.no_transactions")
+                        : locManager.localize("transactions.empty.subtitle")
+                )
+                Spacer()
+            }
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
         } else {
             transactionsList
         }
