@@ -85,6 +85,8 @@ struct BudgetSummaryCard: View {
     let budget: Budget
     let spent: Decimal
     
+    @Environment(LocalizationManager.self) private var locManager
+    
     // MARK: - الحسابات
     
     private var percentage: Double {
@@ -111,7 +113,7 @@ struct BudgetSummaryCard: View {
                     CategoryIconView(icon: category.icon)
                     
                     VStack(alignment: .leading, spacing: 2) {
-                        Text(category.name)
+                        Text(category.localizedName(using: locManager))
                             .font(SpendlyFont.body)
                             .fontWeight(.semibold)
                         
@@ -138,7 +140,7 @@ struct BudgetSummaryCard: View {
                     
                     Spacer()
                     
-                    Text("\(amountText(abs(remaining))) متبقي")
+                    Text("\(amountText(abs(remaining))) \(locManager.localize("home.left"))")
                         .font(SpendlyFont.caption)
                         .foregroundStyle(Color.spMuted)
                 }
@@ -150,15 +152,15 @@ struct BudgetSummaryCard: View {
     
     private var statusText: String {
         switch status {
-        case .ok:      return "ضمن الميزانية"
-        case .warning: return "قريب من الحد"
-        case .over:    return "تجاوز الميزانية"
+        case .ok:      return locManager.localize("budget.status.ok")
+        case .warning: return locManager.localize("budget.status.warning")
+        case .over:    return locManager.localize("budget.status.over")
         }
     }
     
     private func amountText(_ amount: Decimal) -> String {
         let formatted = amount.formatted(.number.precision(.fractionLength(0)))
-        return "\(formatted) ج.م"
+        return "\(formatted) \(locManager.localize("general.currency"))"
     }
     
     private func abs(_ value: Decimal) -> Decimal {

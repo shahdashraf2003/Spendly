@@ -24,6 +24,8 @@ struct HomeView: View {
     /// ViewModel الخاص بالشاشة الرئيسية
     @State var viewModel: HomeViewModel
     
+    @Environment(LocalizationManager.self) private var locManager
+    
     /// هل نافذة إضافة معاملة مفتوحة؟
     @State private var showAddTransaction = false
     
@@ -76,9 +78,8 @@ struct HomeView: View {
         .task {
             viewModel.loadData()
         }
-        // ── Sheet إضافة معاملة ───────────────────────────────────
         .sheet(isPresented: $showAddTransaction) {
-            Text("شيت إضافة معاملة — سيأتي في الخطوة القادمة")
+            Text(locManager.localize("general.coming_soon"))
                 .padding()
         }
     }
@@ -94,7 +95,7 @@ struct HomeView: View {
                     .foregroundStyle(Color.spMuted)
                 
                 // التحية
-                Text("صباح الخير، عمر 👋")
+                Text(locManager.localize("home.greeting"))
                     .font(.system(size: 20, weight: .bold))
                     .foregroundStyle(Color.spForeground)
             }
@@ -127,7 +128,7 @@ struct HomeView: View {
             VStack(alignment: .leading, spacing: 0) {
                 
                 // ── الرصيد الكلي ─────────────────────────────────
-                Text("الرصيد الإجمالي")
+                Text(locManager.localize("home.balance"))
                     .font(SpendlyFont.caption)
                     .foregroundStyle(Color.spMuted)
                 
@@ -140,7 +141,7 @@ struct HomeView: View {
                 HStack(spacing: 0) {
                     // الدخل ↓
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("↓ الدخل")
+                        Text("↓ \(locManager.localize("home.income"))")
                             .font(SpendlyFont.caption)
                             .foregroundStyle(Color.spMuted)
                         Text(formatAmount(viewModel.totalIncome))
@@ -153,7 +154,7 @@ struct HomeView: View {
                     
                     // المصروفات ↑
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("↑ المصروفات")
+                        Text("↑ \(locManager.localize("home.expenses"))")
                             .font(SpendlyFont.caption)
                             .foregroundStyle(Color.spMuted)
                         Text(formatAmount(viewModel.totalExpenses))
@@ -166,7 +167,7 @@ struct HomeView: View {
                     
                     // الصافي
                     VStack(alignment: .leading, spacing: 2) {
-                        Text("الصافي")
+                        Text(locManager.localize("home.net"))
                             .font(SpendlyFont.caption)
                             .foregroundStyle(Color.spMuted)
                         let net = viewModel.totalIncome - viewModel.totalExpenses
@@ -185,15 +186,15 @@ struct HomeView: View {
     
     private var quickActionsSection: some View {
         HStack(spacing: 10) {
-            QuickActionButton(icon: "➖", title: "مصروف") {
+            QuickActionButton(icon: "➖", title: locManager.localize("add_transaction.type.expense")) {
                 addTransactionType = .expense
                 showAddTransaction = true
             }
-            QuickActionButton(icon: "➕", title: "دخل") {
+            QuickActionButton(icon: "➕", title: locManager.localize("add_transaction.type.income")) {
                 addTransactionType = .income
                 showAddTransaction = true
             }
-            QuickActionButton(icon: "📊", title: "التحليلات") {
+            QuickActionButton(icon: "📊", title: locManager.localize("home.analytics")) {
                 // TODO: فتح شاشة التحليلات
             }
         }
@@ -203,7 +204,7 @@ struct HomeView: View {
     
     private var spendingOverviewSection: some View {
         VStack(alignment: .leading, spacing: SpendlySpacing.sm) {
-            Text("نظرة على الإنفاق")
+            Text(locManager.localize("home.spending_overview"))
                 .font(SpendlyFont.sectionTitle)
             
             let pct = viewModel.overallSpendingPercentage
@@ -217,7 +218,7 @@ struct HomeView: View {
                         Text(formatAmount(viewModel.totalExpenses))
                             .font(SpendlyFont.body)
                             .fontWeight(.bold)
-                        + Text(" من \(formatAmount(viewModel.totalBudget))")
+                        + Text(" \(locManager.localize("home.of")) \(formatAmount(viewModel.totalBudget))")
                             .font(SpendlyFont.body)
                             .foregroundStyle(Color.spMuted)
                         
@@ -234,7 +235,7 @@ struct HomeView: View {
                     )
                     
                     // المتبقي
-                    Text("\(formatAmount(viewModel.totalBudget - viewModel.totalExpenses)) متبقي")
+                    Text("\(formatAmount(viewModel.totalBudget - viewModel.totalExpenses)) \(locManager.localize("home.left"))")
                         .font(SpendlyFont.caption)
                         .foregroundStyle(Color.spMuted)
                 }
@@ -246,7 +247,7 @@ struct HomeView: View {
     
     private var categoriesSection: some View {
         VStack(alignment: .leading, spacing: SpendlySpacing.sm) {
-            Text("الإنفاق حسب الفئة")
+            Text(locManager.localize("home.categories_breakdown"))
                 .font(SpendlyFont.sectionTitle)
             
             SpendlyCard {
@@ -256,7 +257,7 @@ struct HomeView: View {
                         HStack {
                             Text(cat.icon)
                                 .frame(width: 24)
-                            Text(cat.name)
+                            Text(cat.localizedName(using: locManager))
                                 .font(SpendlyFont.body)
                                 .foregroundStyle(Color.spForeground)
                             Spacer()
@@ -268,7 +269,7 @@ struct HomeView: View {
                     
                     // إذا لم توجد فئات
                     if viewModel.categories.isEmpty {
-                        Text("لا توجد فئات بعد")
+                        Text(locManager.localize("general.empty_categories"))
                             .font(SpendlyFont.body)
                             .foregroundStyle(Color.spMuted)
                     }
@@ -282,7 +283,7 @@ struct HomeView: View {
     private var recentTransactionsSection: some View {
         VStack(alignment: .leading, spacing: SpendlySpacing.sm) {
             SectionHeaderView(
-                title: "أحدث المعاملات",
+                title: locManager.localize("home.recent_transactions"),
                 showSeeAll: !viewModel.recentTransactions.isEmpty
             )
             
@@ -290,8 +291,8 @@ struct HomeView: View {
                 SpendlyCard {
                     EmptyStateView(
                         icon: "🧾",
-                        title: "لا توجد معاملات",
-                        subtitle: "اضغط + لإضافة أول معاملة"
+                        title: locManager.localize("transactions.empty.title"),
+                        subtitle: locManager.localize("transactions.empty.subtitle")
                     )
                 }
             } else {
@@ -323,7 +324,7 @@ struct HomeView: View {
     private func formatAmount(_ amount: Decimal) -> String {
         let abs = amount < 0 ? -amount : amount
         let formatted = abs.formatted(.number.precision(.fractionLength(0)))
-        return "\(formatted) ج.م"
+        return "\(formatted) \(locManager.localize("general.currency"))"
     }
     
     /// تنسيق المبلغ مع الإشارة (+ أو -)
@@ -331,7 +332,7 @@ struct HomeView: View {
         let sign = amount >= 0 ? "+" : "−"
         let abs = amount < 0 ? -amount : amount
         let formatted = abs.formatted(.number.precision(.fractionLength(0)))
-        return "\(sign)\(formatted) ج.م"
+        return "\(sign)\(formatted) \(locManager.localize("general.currency"))"
     }
 }
 

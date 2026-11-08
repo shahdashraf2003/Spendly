@@ -21,12 +21,12 @@ enum AppTab: Int, CaseIterable {
     case budgets      = 2
     case profile      = 3
     
-    var title: String {
+    var locKey: String {
         switch self {
-        case .home:         return "الرئيسية"
-        case .transactions: return "المعاملات"
-        case .budgets:      return "الميزانيات"
-        case .profile:      return "حسابي"
+        case .home:         return "tab.home"
+        case .transactions: return "tab.transactions"
+        case .budgets:      return "tab.budgets"
+        case .profile:      return "tab.profile"
         }
     }
     
@@ -47,6 +47,8 @@ struct ContentView: View {
     // MARK: - الخصائص
     
     let appContainer: AppContainer
+    
+    @Environment(LocalizationManager.self) private var locManager
     
     // MARK: - الحالة
     
@@ -85,7 +87,7 @@ struct ContentView: View {
                 }
                 .tag(AppTab.home)
                 .tabItem {
-                    Label(AppTab.home.title, systemImage: AppTab.home.icon)
+                    Label(locManager.localize(AppTab.home.locKey), systemImage: AppTab.home.icon)
                 }
                 
                 // ── المعاملات ────────────────────────────
@@ -97,7 +99,7 @@ struct ContentView: View {
                 }
                 .tag(AppTab.transactions)
                 .tabItem {
-                    Label(AppTab.transactions.title, systemImage: AppTab.transactions.icon)
+                    Label(locManager.localize(AppTab.transactions.locKey), systemImage: AppTab.transactions.icon)
                 }
                 
                 // ── الميزانيات ───────────────────────────
@@ -110,7 +112,7 @@ struct ContentView: View {
                 }
                 .tag(AppTab.budgets)
                 .tabItem {
-                    Label(AppTab.budgets.title, systemImage: AppTab.budgets.icon)
+                    Label(locManager.localize(AppTab.budgets.locKey), systemImage: AppTab.budgets.icon)
                 }
                 
                 // ── الملف الشخصي ─────────────────────────
@@ -119,7 +121,7 @@ struct ContentView: View {
                 }
                 .tag(AppTab.profile)
                 .tabItem {
-                    Label(AppTab.profile.title, systemImage: AppTab.profile.icon)
+                    Label(locManager.localize(AppTab.profile.locKey), systemImage: AppTab.profile.icon)
                 }
             }
             .tint(Color.spAccent)  // لون التبويب النشط

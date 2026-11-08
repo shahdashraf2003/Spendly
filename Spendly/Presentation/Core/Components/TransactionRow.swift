@@ -30,6 +30,8 @@ struct TransactionRow: View {
     /// هل هناك حدث عند الضغط؟
     var onTap: (() -> Void)?
     
+    @Environment(LocalizationManager.self) private var locManager
+    
     // MARK: - الواجهة
     
     var body: some View {
@@ -43,7 +45,7 @@ struct TransactionRow: View {
                 
                 // ── اسم المعاملة والتفاصيل ────────────────────
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(transaction.note ?? category?.name ?? "معاملة")
+                    Text(transaction.note ?? category?.localizedName(using: locManager) ?? locManager.localize("general.transaction"))
                         .font(SpendlyFont.body)
                         .fontWeight(.semibold)
                         .foregroundStyle(Color.spForeground)
@@ -73,7 +75,7 @@ struct TransactionRow: View {
     
     /// نص الفئة والتاريخ
     private var subtitleText: String {
-        let catName = category?.name ?? ""
+        let catName = category?.localizedName(using: locManager) ?? ""
         let dateStr = transaction.date.formatted(.relative(presentation: .named))
         return catName.isEmpty ? dateStr : "\(catName) · \(dateStr)"
     }
@@ -82,7 +84,7 @@ struct TransactionRow: View {
     private var amountText: String {
         let sign = transaction.type == .income ? "+" : "−"
         let formatted = transaction.amount.formatted(.number.precision(.fractionLength(0)))
-        return "\(sign)\(formatted) ج.م"
+        return "\(sign)\(formatted) \(locManager.localize("general.currency"))"
     }
 }
 

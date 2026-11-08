@@ -22,11 +22,11 @@ enum TransactionFilter: String, CaseIterable {
     case income  = "income"
     case expense = "expense"
     
-    var title: String {
+    var locKey: String {
         switch self {
-        case .all:     return "الكل"
-        case .income:  return "الدخل"
-        case .expense: return "المصروف"
+        case .all:     return "transactions.filter.all"
+        case .income:  return "transactions.filter.income"
+        case .expense: return "transactions.filter.expense"
         }
     }
 }
@@ -38,6 +38,8 @@ struct TransactionsView: View {
     // MARK: - الخصائص
     
     @State var viewModel: TransactionsViewModel
+    
+    @Environment(LocalizationManager.self) private var locManager
     
     /// قائمة الفئات (نحتاجها لعرض اسم الفئة بجانب المعاملة)
     let categories: [Category]
@@ -144,7 +146,7 @@ struct TransactionsView: View {
                 category: category(for: tx.categoryID)
             ) {
                 viewModel.deleteTransaction(id: tx.id)
-                toastMessage = "تم حذف المعاملة"
+                toastMessage = locManager.localize("transactions.deleted")
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                     toastMessage = nil
                 }
@@ -157,7 +159,7 @@ struct TransactionsView: View {
     private var headerSection: some View {
         VStack(alignment: .leading, spacing: SpendlySpacing.sm) {
             // عنوان الصفحة
-            Text("المعاملات")
+            Text(locManager.localize("transactions.title"))
                 .font(SpendlyFont.largeTitle)
                 .padding(.horizontal, SpendlySpacing.xl)
                 .padding(.top, 8)
@@ -166,7 +168,7 @@ struct TransactionsView: View {
             HStack {
                 Image(systemName: "magnifyingglass")
                     .foregroundStyle(Color.spMuted)
-                TextField("بحث...", text: $searchText)
+                TextField(locManager.localize("transactions.search"), text: $searchText)
                     .font(SpendlyFont.body)
             }
             .padding(SpendlySpacing.md)
@@ -179,7 +181,7 @@ struct TransactionsView: View {
                 HStack(spacing: SpendlySpacing.sm) {
                     ForEach(TransactionFilter.allCases, id: \.self) { filter in
                         FilterChip(
-                            title: filter.title,
+                            title: locManager.localize(filter.locKey),
                             isSelected: activeFilter == filter
                         ) {
                             activeFilter = filter
@@ -244,8 +246,10 @@ struct TransactionsView: View {
             .overlay {
                 EmptyStateView(
                     icon: "🧾",
-                    title: "لا توجد معاملات",
-                    subtitle: searchText.isEmpty ? "اضغط + لإضافة أول معاملة" : "جرّب بحثًا آخر"
+                    title: locManager.localize("transactions.empty.title"),
+                    subtitle: searchText.isEmpty
+                        ? locManager.localize("transactions.empty.subtitle")
+                        : locManager.localize("transactions.empty.subtitle")
                 )
             }
     }
@@ -258,8 +262,8 @@ struct TransactionsView: View {
     }
     
     private func dateLabel(for date: Date, calendar: Calendar) -> String {
-        if calendar.isDateInToday(date)     { return "اليوم" }
-        if calendar.isDateInYesterday(date) { return "أمس" }
+        if calendar.isDateInToday(date)     { return locManager.localize("transactions.today") }
+        if calendar.isDateInYesterday(date) { return locManager.localize("transactions.yesterday") }
         return date.formatted(.dateTime.weekday(.short).day().month(.abbreviated))
     }
 }

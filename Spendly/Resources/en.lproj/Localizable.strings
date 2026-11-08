@@ -19,6 +19,12 @@
 "general.ok" = "OK";
 "general.see_all" = "See All";
 "general.currency" = "EGP";
+"general.transaction" = "Transaction";
+"general.empty_categories" = "No categories yet";
+"general.coming_soon" = "Coming soon";
+"general.error.loading_data" = "Couldn't load data. Please try again.";
+"general.amount" = "Amount";
+"general.no_data" = "No data";
 
 // MARK: - Tab Bar
 "tab.home" = "Home";
@@ -54,6 +60,8 @@
 "transactions.yesterday" = "Yesterday";
 "transactions.added" = "Transaction added";
 "transactions.deleted" = "Transaction deleted";
+"transactions.detail_title" = "Transaction Details";
+"transactions.delete_button" = "Delete Transaction";
 
 // MARK: - Add Transaction Sheet
 "add_transaction.title" = "Add Transaction";
@@ -72,6 +80,8 @@
 "budgets.spent" = "Spent";
 "budgets.remaining" = "Remaining";
 "budgets.add" = "Add Budget";
+"budgets.empty.title" = "No budgets yet";
+"budgets.empty.subtitle" = "Tap the button below to add your first budget";
 "budget.status.ok" = "Within budget";
 "budget.status.warning" = "Near limit";
 "budget.status.over" = "Over budget";

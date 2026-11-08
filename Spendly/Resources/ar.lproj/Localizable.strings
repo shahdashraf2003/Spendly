@@ -19,6 +19,12 @@
 "general.ok" = "حسناً";
 "general.see_all" = "عرض الكل";
 "general.currency" = "ج.م";
+"general.transaction" = "معاملة";
+"general.empty_categories" = "لا توجد فئات بعد";
+"general.coming_soon" = "قريباً";
+"general.error.loading_data" = "تعذّر تحميل البيانات. حاول مرة أخرى.";
+"general.amount" = "المبلغ";
+"general.no_data" = "لا توجد بيانات";
 
 // MARK: - شريط التبويب
 "tab.home" = "الرئيسية";
@@ -54,6 +60,8 @@
 "transactions.yesterday" = "أمس";
 "transactions.added" = "تمت إضافة المعاملة";
 "transactions.deleted" = "تم حذف المعاملة";
+"transactions.detail_title" = "تفاصيل المعاملة";
+"transactions.delete_button" = "حذف المعاملة";
 
 // MARK: - شيت إضافة معاملة
 "add_transaction.title" = "إضافة معاملة";
@@ -72,6 +80,8 @@
 "budgets.spent" = "المصروف";
 "budgets.remaining" = "المتبقي";
 "budgets.add" = "إضافة ميزانية";
+"budgets.empty.title" = "لا توجد ميزانيات";
+"budgets.empty.subtitle" = "اضغط الزر أدناه لإضافة أول ميزانية";
 "budget.status.ok" = "ضمن الميزانية";
 "budget.status.warning" = "قريب من الحد";
 "budget.status.over" = "تجاوز الميزانية";

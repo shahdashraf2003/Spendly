@@ -70,6 +70,8 @@ struct SectionHeaderView: View {
     var showSeeAll: Bool = false
     var onSeeAll: (() -> Void)?
     
+    @Environment(LocalizationManager.self) private var locManager
+    
     var body: some View {
         HStack {
             Text(title)
@@ -79,7 +81,7 @@ struct SectionHeaderView: View {
             Spacer()
             
             if showSeeAll {
-                Button("عرض الكل") {
+                Button(locManager.localize("general.see_all")) {
                     onSeeAll?()
                 }
                 .font(SpendlyFont.body)

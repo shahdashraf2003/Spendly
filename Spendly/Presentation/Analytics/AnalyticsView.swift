@@ -9,9 +9,17 @@ import Charts
 
 
 enum AnalyticsPeriod: String, CaseIterable {
-    case week  = "أسبوع"
-    case month = "شهر"
-    case year  = "سنة"
+    case week  = "week"
+    case month = "month"
+    case year  = "year"
+    
+    var locKey: String {
+        switch self {
+        case .week:  return "analytics.period.week"
+        case .month: return "analytics.period.month"
+        case .year:  return "analytics.period.year"
+        }
+    }
 }
 
 // MARK: - AnalyticsView
@@ -24,6 +32,8 @@ struct AnalyticsView: View {
     let categories: [Category]
     
     @State private var selectedPeriod = AnalyticsPeriod.month
+    
+    @Environment(LocalizationManager.self) private var locManager
     
 
     private var expensesByCategory: [(Category, Decimal)] {
@@ -72,7 +82,7 @@ struct AnalyticsView: View {
             LazyVStack(alignment: .leading, spacing: 0) {
                 
 
-                Text("التحليلات")
+                Text(locManager.localize("analytics.title"))
                     .font(SpendlyFont.largeTitle)
                     .padding(.horizontal, SpendlySpacing.xl)
                     .padding(.top, 8)
@@ -111,7 +121,7 @@ struct AnalyticsView: View {
                 Button {
                     withAnimation { selectedPeriod = period }
                 } label: {
-                    Text(period.rawValue)
+                    Text(locManager.localize(period.locKey))
                         .font(SpendlyFont.body)
                         .fontWeight(selectedPeriod == period ? .semibold : .regular)
                         .frame(maxWidth: .infinity)
@@ -131,7 +141,7 @@ struct AnalyticsView: View {
     
     private var trendChart: some View {
         VStack(alignment: .leading, spacing: SpendlySpacing.sm) {
-            Text("اتجاه الإنفاق")
+            Text(locManager.localize("analytics.trend"))
                 .font(SpendlyFont.sectionTitle)
                 .padding(.horizontal, SpendlySpacing.xl)
             
@@ -160,7 +170,7 @@ struct AnalyticsView: View {
     
     private var breakdownChart: some View {
         VStack(alignment: .leading, spacing: SpendlySpacing.sm) {
-            Text("توزيع الفئات")
+            Text(locManager.localize("analytics.breakdown"))
                 .font(SpendlyFont.sectionTitle)
                 .padding(.horizontal, SpendlySpacing.xl)
             
@@ -172,7 +182,7 @@ struct AnalyticsView: View {
                         if #available(iOS 16.0, *) {
                             Chart(Array(expensesByCategory.enumerated()), id: \.offset) { idx, item in
                                 SectorMark(
-                                    angle: .value("المبلغ", Double(truncating: item.1 as NSDecimalNumber)),
+                                    angle: .value(locManager.localize("general.amount"), Double(truncating: item.1 as NSDecimalNumber)),
                                     innerRadius: .ratio(0.55),
                                     angularInset: 2
                                 )
@@ -194,7 +204,7 @@ struct AnalyticsView: View {
                                     .fill(chartColors[idx % chartColors.count])
                                     .frame(width: 10, height: 10)
                                 
-                                Text(item.0.name)
+                                Text(item.0.localizedName(using: locManager))
                                     .font(SpendlyFont.caption)
                                     .foregroundStyle(Color.spForeground)
                                 
@@ -207,7 +217,7 @@ struct AnalyticsView: View {
                         }
                         
                         if expensesByCategory.isEmpty {
-                            Text("لا توجد بيانات")
+                            Text(locManager.localize("general.no_data"))
                                 .font(SpendlyFont.caption)
                                 .foregroundStyle(Color.spMuted)
                         }
@@ -224,7 +234,7 @@ struct AnalyticsView: View {
         HStack(spacing: SpendlySpacing.sm) {
             SpendlyCard {
                 VStack(alignment: .leading, spacing: SpendlySpacing.xs) {
-                    Text("صافي المدخرات")
+                    Text(locManager.localize("analytics.net_savings"))
                         .font(SpendlyFont.caption)
                         .foregroundStyle(Color.spMuted)
                     Text(formatAmount(totalIncome - totalExpenses))
@@ -235,7 +245,7 @@ struct AnalyticsView: View {
             
             SpendlyCard {
                 VStack(alignment: .leading, spacing: SpendlySpacing.xs) {
-                    Text("متوسط اليومي")
+                    Text(locManager.localize("analytics.avg_daily"))
                         .font(SpendlyFont.caption)
                         .foregroundStyle(Color.spMuted)
                     Text(formatAmount(totalExpenses / 30))
@@ -253,7 +263,7 @@ struct AnalyticsView: View {
             HStack(spacing: SpendlySpacing.sm) {
                 Text("💡")
                     .font(.system(size: 20))
-                Text("الطعام أكبر فئة إنفاق. حاول تقليص ميزانيتها قليلاً.")
+                Text(locManager.localize("analytics.insight"))
                     .font(SpendlyFont.caption)
                     .foregroundStyle(Color.spMuted)
             }
@@ -270,6 +280,6 @@ struct AnalyticsView: View {
     
     private func formatAmount(_ amount: Decimal) -> String {
         let abs = amount < 0 ? -amount : amount
-        return "\(abs.formatted(.number.precision(.fractionLength(0)))) ج.م"
+        return "\(abs.formatted(.number.precision(.fractionLength(0)))) \(locManager.localize("general.currency"))"
     }
 }

@@ -110,7 +110,7 @@ final class HomeViewModel {
             categories = try fetchCategoriesUseCase.execute()
             
         } catch {
-            errorMessage = "تعذّر تحميل البيانات. حاول مرة أخرى."
+            errorMessage = "Couldn't load data. Please try again."
         }
     }
     

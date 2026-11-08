@@ -21,6 +21,7 @@ struct AddTransactionSheet: View {
     // MARK: - الخصائص
     
     @Environment(\.dismiss) private var dismiss
+    @Environment(LocalizationManager.self) private var locManager
     
     @State var viewModel: TransactionsViewModel
     let categories: [Category]
@@ -76,14 +77,14 @@ struct AddTransactionSheet: View {
                         AmountTextField(
                             text: $amountText,
                             hasError: amountError,
-                            errorMessage: "⚠ أدخل مبلغًا صحيحًا"
+                            errorMessage: "⚠ \(locManager.localize("add_transaction.amount_error"))"
                         )
                         .padding(.vertical, SpendlySpacing.sm)
                     }
                     
                     // ── اختيار الفئة ─────────────────────────
                     VStack(alignment: .leading, spacing: SpendlySpacing.sm) {
-                        Text("الفئة")
+                        Text(locManager.localize("add_transaction.category_label"))
                             .font(SpendlyFont.caption)
                             .foregroundStyle(Color.spMuted)
                         
@@ -102,7 +103,7 @@ struct AddTransactionSheet: View {
                         
                         // رسالة الخطأ
                         if categoryError {
-                            Text("⚠ اختر فئة")
+                            Text("⚠ \(locManager.localize("add_transaction.category_error"))")
                                 .font(SpendlyFont.caption)
                                 .foregroundStyle(Color.spDanger)
                         }
@@ -110,11 +111,11 @@ struct AddTransactionSheet: View {
                     
                     // ── حقل الملاحظة ─────────────────────────
                     VStack(alignment: .leading, spacing: SpendlySpacing.xs) {
-                        Text("ملاحظة")
+                        Text(locManager.localize("add_transaction.note_placeholder"))
                             .font(SpendlyFont.caption)
                             .foregroundStyle(Color.spMuted)
                         
-                        TextField("اختياري...", text: $note)
+                        TextField(locManager.localize("add_transaction.note_placeholder"), text: $note)
                             .font(SpendlyFont.bodyLarge)
                             .padding(SpendlySpacing.md)
                             .background(Color.spCard)
@@ -123,7 +124,7 @@ struct AddTransactionSheet: View {
                     
                     // ── التاريخ ──────────────────────────────
                     VStack(alignment: .leading, spacing: SpendlySpacing.xs) {
-                        Text("التاريخ")
+                        Text(locManager.localize("add_transaction.date_label"))
                             .font(SpendlyFont.caption)
                             .foregroundStyle(Color.spMuted)
                         
@@ -135,7 +136,7 @@ struct AddTransactionSheet: View {
                     }
                     
                     // ── زر الحفظ ─────────────────────────────
-                    SpendlyButton("إضافة المعاملة") {
+                    SpendlyButton(locManager.localize("add_transaction.title")) {
                         saveTransaction()
                     }
                     .padding(.top, SpendlySpacing.sm)
@@ -143,11 +144,11 @@ struct AddTransactionSheet: View {
                 .padding(SpendlySpacing.xl)
             }
             .background(Color.spBackground)
-            .navigationTitle("إضافة معاملة")
+            .navigationTitle(locManager.localize("add_transaction.title"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("إغلاق") { dismiss() }
+                    Button(locManager.localize("general.close")) { dismiss() }
                         .foregroundStyle(Color.spAccent)
                 }
             }
@@ -165,7 +166,7 @@ struct AddTransactionSheet: View {
                         selectedCategory = nil
                     }
                 } label: {
-                    Text(t == .expense ? "مصروف" : "دخل")
+                    Text(t == .expense ? locManager.localize("add_transaction.type.expense") : locManager.localize("add_transaction.type.income"))
                         .font(SpendlyFont.body)
                         .fontWeight(type == t ? .semibold : .regular)
                         .frame(maxWidth: .infinity)
@@ -203,7 +204,7 @@ struct AddTransactionSheet: View {
         viewModel.addTransaction(transaction)
         
         dismiss()
-        onSuccess("تمت إضافة المعاملة ✓")
+        onSuccess(locManager.localize("transactions.added") + " ✓")
     }
 }
 
@@ -215,11 +216,13 @@ struct CategoryChip: View {
     let isSelected: Bool
     let action: () -> Void
     
+    @Environment(LocalizationManager.self) private var locManager
+    
     var body: some View {
         Button(action: action) {
             HStack(spacing: SpendlySpacing.xs) {
                 Text(category.icon)
-                Text(category.name)
+                Text(category.localizedName(using: locManager))
                     .font(SpendlyFont.body)
             }
             .padding(.horizontal, 14)
@@ -283,6 +286,7 @@ struct FlowLayout: Layout {
 
 struct TransactionDetailSheet: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(LocalizationManager.self) private var locManager
     
     let transaction: Transaction
     let category: Category?
@@ -302,7 +306,7 @@ struct TransactionDetailSheet: View {
                             transaction.type == .income ? Color.spSuccess : Color.spForeground
                         )
                     
-                    Text(transaction.note ?? category?.name ?? "معاملة")
+                    Text(transaction.note ?? category?.localizedName(using: locManager) ?? locManager.localize("general.transaction"))
                         .font(SpendlyFont.body)
                         .foregroundStyle(Color.spMuted)
                 }
@@ -312,15 +316,15 @@ struct TransactionDetailSheet: View {
                 // ── التفاصيل ─────────────────────────────────
                 SpendlyCard {
                     VStack(spacing: 0) {
-                        detailRow(label: "الفئة", value: category?.name ?? "—")
+                        detailRow(label: locManager.localize("add_transaction.category_label"), value: category?.localizedName(using: locManager) ?? "—")
                         Divider()
                         detailRow(
-                            label: "التاريخ",
+                            label: locManager.localize("add_transaction.date_label"),
                             value: transaction.date.formatted(.dateTime.day().month(.wide).year())
                         )
                         if let note = transaction.note, !note.isEmpty {
                             Divider()
-                            detailRow(label: "ملاحظة", value: note)
+                            detailRow(label: locManager.localize("add_transaction.note_placeholder"), value: note)
                         }
                     }
                 }
@@ -329,7 +333,7 @@ struct TransactionDetailSheet: View {
                 Spacer()
                 
                 // ── زر الحذف ─────────────────────────────────
-                SpendlyButton("حذف المعاملة", style: .destructive) {
+                SpendlyButton(locManager.localize("transactions.delete_button"), style: .destructive) {
                     onDelete()
                     dismiss()
                 }
@@ -337,11 +341,11 @@ struct TransactionDetailSheet: View {
                 .padding(.bottom, SpendlySpacing.xxl)
             }
             .background(Color.spBackground)
-            .navigationTitle("تفاصيل المعاملة")
+            .navigationTitle(locManager.localize("transactions.detail_title"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("إغلاق") { dismiss() }
+                    Button(locManager.localize("general.close")) { dismiss() }
                         .foregroundStyle(Color.spAccent)
                 }
             }
@@ -351,7 +355,7 @@ struct TransactionDetailSheet: View {
     private var signedAmount: String {
         let sign = transaction.type == .income ? "+" : "−"
         let formatted = transaction.amount.formatted(.number.precision(.fractionLength(0)))
-        return "\(sign)\(formatted) ج.م"
+        return "\(sign)\(formatted) \(locManager.localize("general.currency"))"
     }
     
     private func detailRow(label: String, value: String) -> some View {

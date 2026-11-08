@@ -115,3 +115,29 @@ extension View {
         self.environment(\.layoutDirection, manager.language.layoutDirection)
     }
 }
+
+// MARK: - Category Localization Extension
+
+extension Category {
+    /// ترجمة اسم الفئة حسب اللغة المختارة
+    func localizedName(using manager: LocalizationManager) -> String {
+        switch name.lowercased() {
+        case "food", "الطعام", "category.food":
+            return manager.localize("category.food")
+        case "shopping", "التسوق", "category.shopping":
+            return manager.localize("category.shopping")
+        case "transportation", "المواصلات", "category.transport":
+            return manager.localize("category.transport")
+        case "bills", "الفواتير", "category.bills":
+            return manager.localize("category.bills")
+        case "entertainment", "الترفيه", "category.entertainment":
+            return manager.localize("category.entertainment")
+        case "income", "الدخل", "category.income":
+            return manager.localize("category.income")
+        case "other", "أخرى", "category.other":
+            return manager.localize("category.other")
+        default:
+            return manager.localize(name)
+        }
+    }
+}

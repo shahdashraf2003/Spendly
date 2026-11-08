@@ -24,6 +24,8 @@ struct BudgetsView: View {
     
     @State private var showAddBudget = false
     
+    @Environment(LocalizationManager.self) private var locManager
+    
     // MARK: - الحسابات
     
     /// إجمالي كل الميزانيات
@@ -50,7 +52,7 @@ struct BudgetsView: View {
             LazyVStack(alignment: .leading, spacing: 0) {
                 
                 // ── عنوان الصفحة ─────────────────────────────
-                Text("الميزانيات")
+                Text(locManager.localize("budgets.title"))
                     .font(SpendlyFont.largeTitle)
                     .padding(.horizontal, SpendlySpacing.xl)
                     .padding(.top, 8)
@@ -65,7 +67,7 @@ struct BudgetsView: View {
                     .padding(.top, SpendlySpacing.xl)
                 
                 // ── زر إضافة ميزانية ─────────────────────────
-                SpendlyButton("＋ إضافة ميزانية") {
+                SpendlyButton("＋ \(locManager.localize("budgets.add"))") {
                     showAddBudget = true
                 }
                 .padding(.horizontal, SpendlySpacing.xl)
@@ -76,7 +78,7 @@ struct BudgetsView: View {
         .background(Color.spBackground)
         .task { budgetsViewModel.loadBudgets() }
         .sheet(isPresented: $showAddBudget) {
-            Text("شيت إضافة ميزانية — قريباً")
+            Text(locManager.localize("general.coming_soon"))
                 .padding()
         }
     }
@@ -86,11 +88,11 @@ struct BudgetsView: View {
     private var summaryCard: some View {
         SpendlyCard {
             HStack {
-                summaryItem(label: "إجمالي الميزانية", value: totalBudget, color: .spForeground)
+                summaryItem(label: locManager.localize("budgets.total"), value: totalBudget, color: .spForeground)
                 Spacer()
-                summaryItem(label: "المصروف", value: totalSpent, color: .spForeground)
+                summaryItem(label: locManager.localize("budgets.spent"), value: totalSpent, color: .spForeground)
                 Spacer()
-                summaryItem(label: "المتبقي", value: totalRemaining, color: .spSuccess)
+                summaryItem(label: locManager.localize("budgets.remaining"), value: totalRemaining, color: .spSuccess)
             }
         }
     }
@@ -114,8 +116,8 @@ struct BudgetsView: View {
                 SpendlyCard {
                     EmptyStateView(
                         icon: "💰",
-                        title: "لا توجد ميزانيات",
-                        subtitle: "اضغط الزر أدناه لإضافة أول ميزانية"
+                        title: locManager.localize("budgets.empty.title"),
+                        subtitle: locManager.localize("budgets.empty.subtitle")
                     )
                 }
                 .padding(.horizontal, SpendlySpacing.xl)
@@ -148,6 +150,6 @@ struct BudgetsView: View {
     
     private func formatAmount(_ amount: Decimal) -> String {
         let abs = amount < 0 ? -amount : amount
-        return "\(abs.formatted(.number.precision(.fractionLength(0)))) ج.م"
+        return "\(abs.formatted(.number.precision(.fractionLength(0)))) \(locManager.localize("general.currency"))"
     }
 }

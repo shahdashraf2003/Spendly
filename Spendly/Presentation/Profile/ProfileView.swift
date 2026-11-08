@@ -17,9 +17,17 @@ import SwiftUI
 // وضع المظهر
 
 enum AppearanceMode: String, CaseIterable {
-    case system = "تلقائي"
-    case light  = "فاتح"
-    case dark   = "داكن"
+    case system = "system"
+    case light  = "light"
+    case dark   = "dark"
+    
+    var locKey: String {
+        switch self {
+        case .system: return "profile.appearance.system"
+        case .light:  return "profile.appearance.light"
+        case .dark:   return "profile.appearance.dark"
+        }
+    }
     
     var colorScheme: ColorScheme? {
         switch self {
@@ -45,6 +53,8 @@ struct ProfileView: View {
     
     @Binding var colorScheme: AppearanceMode
     
+    @Environment(LocalizationManager.self) private var locManager
+    
     // MARK: - الواجهة
     
     var body: some View {
@@ -52,25 +62,25 @@ struct ProfileView: View {
             LazyVStack(alignment: .leading, spacing: 0) {
                 
                 // ── عنوان الصفحة ─────────────────────────────
-                Text("حسابي")
+                Text(locManager.localize("profile.title"))
                     .font(SpendlyFont.largeTitle)
                     .padding(.horizontal, SpendlySpacing.xl)
                     .padding(.top, 8)
                 
                 // ── قسم التفضيلات ─────────────────────────────
-                sectionHeader("التفضيلات")
+                sectionHeader(locManager.localize("profile.preferences"))
                 preferencesSection
                 
                 // ── قسم الأمان ────────────────────────────────
-                sectionHeader("الأمان")
+                sectionHeader(locManager.localize("profile.security"))
                 securitySection
                 
                 // ── قسم الإشعارات ─────────────────────────────
-                sectionHeader("الإشعارات")
+                sectionHeader(locManager.localize("profile.notifications"))
                 notificationsSection
                 
                 // ── قسم البيانات ──────────────────────────────
-                sectionHeader("البيانات")
+                sectionHeader(locManager.localize("profile.data"))
                 dataSection
                     .padding(.bottom, SpendlySpacing.xxl)
             }
@@ -83,29 +93,44 @@ struct ProfileView: View {
     private var preferencesSection: some View {
         SpendlyCard(padding: 0) {
             VStack(spacing: 0) {
-                settingsRow(label: "العملة") {
-                    Text("ج.م").foregroundStyle(Color.spMuted).font(SpendlyFont.body)
+                settingsRow(label: locManager.localize("profile.currency")) {
+                    Text(locManager.localize("general.currency")).foregroundStyle(Color.spMuted).font(SpendlyFont.body)
                 }
                 
                 Divider().padding(.leading, SpendlySpacing.lg)
                 
-                settingsRow(label: "اللغة") {
-                    Text("العربية").foregroundStyle(Color.spMuted).font(SpendlyFont.body)
+                settingsRow(label: locManager.localize("profile.language")) {
+                    Menu {
+                        ForEach(AppLanguage.allCases, id: \.self) { lang in
+                            Button(lang.displayName) {
+                                locManager.setLanguage(lang)
+                            }
+                        }
+                    } label: {
+                        HStack(spacing: SpendlySpacing.xs) {
+                            Text(locManager.language.displayName)
+                                .foregroundStyle(Color.spMuted)
+                                .font(SpendlyFont.body)
+                            Image(systemName: "chevron.up.chevron.down")
+                                .font(.caption)
+                                .foregroundStyle(Color.spMuted)
+                        }
+                    }
                 }
                 
                 Divider().padding(.leading, SpendlySpacing.lg)
                 
                 // مفتاح المظهر
-                settingsRow(label: "المظهر") {
+                settingsRow(label: locManager.localize("profile.appearance")) {
                     Menu {
                         ForEach(AppearanceMode.allCases, id: \.self) { mode in
-                            Button(mode.rawValue) {
+                            Button(locManager.localize(mode.locKey)) {
                                 colorScheme = mode
                             }
                         }
                     } label: {
                         HStack(spacing: SpendlySpacing.xs) {
-                            Text(colorScheme.rawValue)
+                            Text(locManager.localize(colorScheme.locKey))
                                 .foregroundStyle(Color.spMuted)
                                 .font(SpendlyFont.body)
                             Image(systemName: "chevron.up.chevron.down")
@@ -125,7 +150,7 @@ struct ProfileView: View {
     private var securitySection: some View {
         SpendlyCard(padding: 0) {
             VStack(spacing: 0) {
-                settingsRow(label: "🔒 Face ID") {
+                settingsRow(label: "🔒 \(locManager.localize("profile.face_id"))") {
                     Toggle("", isOn: $faceIDEnabled)
                         .tint(Color.spSuccess)
                         .labelsHidden()
@@ -133,7 +158,7 @@ struct ProfileView: View {
                 
                 Divider().padding(.leading, SpendlySpacing.lg)
                 
-                settingsRow(label: "قفل التطبيق") {
+                settingsRow(label: locManager.localize("profile.app_lock")) {
                     Toggle("", isOn: $appLockEnabled)
                         .tint(Color.spSuccess)
                         .labelsHidden()
@@ -143,10 +168,10 @@ struct ProfileView: View {
                 
                 // نص توضيحي
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("احمِ أموالك")
+                    Text(locManager.localize("profile.face_id_title"))
                         .font(SpendlyFont.body)
                         .fontWeight(.semibold)
-                    Text("استخدم Face ID للحفاظ على خصوصية معلوماتك المالية.")
+                    Text(locManager.localize("profile.face_id_desc"))
                         .font(SpendlyFont.caption)
                         .foregroundStyle(Color.spMuted)
                 }
@@ -162,17 +187,17 @@ struct ProfileView: View {
     private var notificationsSection: some View {
         SpendlyCard(padding: 0) {
             VStack(spacing: 0) {
-                settingsRow(label: "تذكير الدفعات") {
+                settingsRow(label: locManager.localize("profile.notif.payment_reminders")) {
                     Toggle("", isOn: $notifPayment).tint(Color.spSuccess).labelsHidden()
                 }
                 Divider().padding(.leading, SpendlySpacing.lg)
                 
-                settingsRow(label: "تنبيهات الميزانية") {
+                settingsRow(label: locManager.localize("profile.notif.budget_alerts")) {
                     Toggle("", isOn: $notifBudget).tint(Color.spSuccess).labelsHidden()
                 }
                 Divider().padding(.leading, SpendlySpacing.lg)
                 
-                settingsRow(label: "الملخص الشهري") {
+                settingsRow(label: locManager.localize("profile.notif.monthly_summary")) {
                     Toggle("", isOn: $notifMonthly).tint(Color.spSuccess).labelsHidden()
                 }
             }
@@ -186,15 +211,15 @@ struct ProfileView: View {
     private var dataSection: some View {
         SpendlyCard(padding: 0) {
             VStack(spacing: 0) {
-                settingsRow(label: "تصدير البيانات") {
-                    Image(systemName: "chevron.left")
+                settingsRow(label: locManager.localize("profile.export")) {
+                    Image(systemName: locManager.language.isRTL ? "chevron.left" : "chevron.right")
                         .font(SpendlyFont.caption)
                         .foregroundStyle(Color.spMuted)
                 }
                 Divider().padding(.leading, SpendlySpacing.lg)
                 
-                settingsRow(label: "استيراد البيانات") {
-                    Image(systemName: "chevron.left")
+                settingsRow(label: locManager.localize("profile.import")) {
+                    Image(systemName: locManager.language.isRTL ? "chevron.left" : "chevron.right")
                         .font(SpendlyFont.caption)
                         .foregroundStyle(Color.spMuted)
                 }
