@@ -127,3 +127,7 @@
 "category.entertainment" = "Entertainment";
 "category.income" = "Income";
 "category.other" = "Other";
+
+"transactions.delete_confirm.title" = "Delete Transaction?";
+"transactions.delete_confirm.message" = "This action cannot be undone.";
+"transactions.delete_confirm.confirm" = "Delete";

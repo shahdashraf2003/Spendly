@@ -127,3 +127,7 @@
 "category.entertainment" = "الترفيه";
 "category.income" = "الدخل";
 "category.other" = "أخرى";
+
+"transactions.delete_confirm.title" = "حذف المعاملة؟";
+"transactions.delete_confirm.message" = "لا يمكن التراجع عن هذا الإجراء.";
+"transactions.delete_confirm.confirm" = "حذف";

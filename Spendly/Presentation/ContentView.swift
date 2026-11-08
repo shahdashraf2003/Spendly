@@ -120,6 +120,8 @@ struct ContentView: View {
                     toastMessage = nil
                 }
             }
+            .environment(locManager)
+            .layoutDirection(for: locManager)
         }
     }
     
