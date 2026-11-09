@@ -83,7 +83,8 @@ struct ContentView: View {
                     BudgetsView(
                         budgetsViewModel: appContainer.budgetsViewModel,
                         transactionsViewModel: appContainer.transactionsViewModel,
-                        categories: categories
+                        categories: categories,
+                        appContainer: appContainer
                     )
                 }
                 .tag(AppTab.budgets)

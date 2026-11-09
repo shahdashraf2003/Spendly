@@ -33,9 +33,17 @@ final class AppContainer {
 	let transactionsViewModel: TransactionsViewModel
 	let categoriesViewModel: CategoriesViewModel
 	let budgetsViewModel: BudgetsViewModel
-	
+
 	/// ViewModel الشاشة الرئيسية — يجمع البيانات من كل الـ UseCases
 	let homeViewModel: HomeViewModel
+
+	/// Factory لإنشاء AddBudgetViewModel — يُستدعى في كل مرة يُفتح فيها الشيت
+	func makeAddBudgetViewModel() -> AddBudgetViewModel {
+		AddBudgetViewModel(
+			addBudgetUseCase: addBudgetUseCase,
+			fetchCategoriesUseCase: fetchCategoriesUseCase
+		)
+	}
 
     init(modelContext: ModelContext) {
         let transactionDataSource = TransactionLocalDataSource(

@@ -87,6 +87,20 @@
 "budget.status.warning" = "قريب من الحد";
 "budget.status.over" = "تجاوز الميزانية";
 
+// MARK: - شيت إضافة ميزانية
+"add_budget.title" = "إضافة ميزانية";
+"add_budget.amount_label" = "المبلغ";
+"add_budget.amount_error" = "أدخل مبلغًا صحيحًا أكبر من صفر";
+"add_budget.category_label" = "الفئة";
+"add_budget.category_error" = "اختر فئة";
+"add_budget.period_label" = "فترة الميزانية";
+"add_budget.period.weekly" = "أسبوعية";
+"add_budget.period.monthly" = "شهرية";
+"add_budget.period.yearly" = "سنوية";
+"add_budget.error.duplicate" = "توجد ميزانية لهذه الفئة والفترة بالفعل";
+"add_budget.error.generic" = "تعذّر حفظ الميزانية. حاول مرة أخرى";
+"add_budget.added" = "تمت إضافة الميزانية ✓";
+
 // MARK: - شاشة التحليلات
 "analytics.title" = "التحليلات";
 "analytics.trend" = "اتجاه الإنفاق";
