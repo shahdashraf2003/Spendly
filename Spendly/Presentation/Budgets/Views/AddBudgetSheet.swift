@@ -2,14 +2,6 @@
 //  AddBudgetSheet.swift
 //  Spendly
 //
-//  شيت إضافة ميزانية جديدة
-//
-//  يحتوي على:
-//  - حقل المبلغ الكبير مع رمز العملة
-//  - اختيار الفئة (expense فقط) بشكل Chips
-//  - Segmented picker لفترة الميزانية (أسبوعية / شهرية / سنوية)
-//  - زر الحفظ مع التحقق من الصحة
-//  - رسائل خطأ واضحة
 //
 
 import SwiftUI
@@ -18,7 +10,6 @@ import SwiftUI
 
 struct AddBudgetSheet: View {
 
-    // MARK: - الخصائص
 
     @Environment(\.dismiss) private var dismiss
     @Environment(LocalizationManager.self) private var locManager
@@ -26,23 +17,16 @@ struct AddBudgetSheet: View {
     @State var viewModel: AddBudgetViewModel
     var onSuccess: (String) -> Void
 
-    // MARK: - الواجهة
 
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: SpendlySpacing.xl) {
 
-                    // ── المبلغ ────────────────────────────────────
                     amountSection
-
-                    // ── الفئة ─────────────────────────────────────
                     categorySection
-
-                    // ── فترة الميزانية ────────────────────────────
                     periodSection
 
-                    // ── رسالة الخطأ العامة ─────────────────────────
                     if let error = viewModel.errorMessage {
                         Text("⚠ \(locManager.localize(error))")
                             .font(SpendlyFont.caption)
@@ -50,7 +34,6 @@ struct AddBudgetSheet: View {
                             .frame(maxWidth: .infinity, alignment: .leading)
                     }
 
-                    // ── زر الحفظ ──────────────────────────────────
                     SpendlyButton(locManager.localize("general.save"), isLoading: viewModel.isLoading) {
                         viewModel.saveBudget()
                     }
@@ -80,7 +63,6 @@ struct AddBudgetSheet: View {
         .layoutDirection(for: locManager)
     }
 
-    // MARK: - حقل المبلغ
 
     @ViewBuilder
     private var amountSection: some View {
@@ -123,7 +105,6 @@ struct AddBudgetSheet: View {
         .multilineTextAlignment(.center)
     }
 
-    // MARK: - قسم الفئة
 
     private var categorySection: some View {
         VStack(alignment: .leading, spacing: SpendlySpacing.sm) {
@@ -157,7 +138,7 @@ struct AddBudgetSheet: View {
         }
     }
 
-    // MARK: - قسم الفترة
+
 
     @ViewBuilder
     private var periodSection: some View {

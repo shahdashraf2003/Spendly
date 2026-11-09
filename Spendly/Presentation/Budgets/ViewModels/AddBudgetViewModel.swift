@@ -2,14 +2,7 @@
 //  AddBudgetViewModel.swift
 //  Spendly
 //
-//  ViewModel لشاشة إضافة ميزانية جديدة
-//
-//  المسؤوليات:
-//  - تحميل الفئات من نوع expense فقط
-//  - التحقق من صحة المدخلات (المبلغ والفئة)
-//  - حفظ الميزانية عبر AddBudgetUseCase
-//  - عرض رسائل الخطأ المناسبة
-//
+
 
 import Foundation
 import Observation
