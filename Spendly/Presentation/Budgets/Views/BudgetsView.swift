@@ -21,9 +21,11 @@ struct BudgetsView: View {
     @State var budgetsViewModel: BudgetsViewModel
     @State var transactionsViewModel: TransactionsViewModel
     let categories: [Category]
-    
+    let appContainer: AppContainer
+
     @State private var showAddBudget = false
-    
+    @State private var toastMessage: String?
+
     @Environment(LocalizationManager.self) private var locManager
     
     // MARK: - الحسابات
@@ -77,9 +79,16 @@ struct BudgetsView: View {
         }
         .background(Color.spBackground)
         .task { budgetsViewModel.loadBudgets() }
+        .toast(message: $toastMessage)
         .sheet(isPresented: $showAddBudget) {
-            Text(locManager.localize("general.coming_soon"))
-                .padding()
+            AddBudgetSheet(viewModel: appContainer.makeAddBudgetViewModel()) { message in
+                toastMessage = message
+                budgetsViewModel.loadBudgets()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    toastMessage = nil
+                }
+            }
+            .environment(locManager)
         }
     }
     
