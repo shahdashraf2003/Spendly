@@ -87,6 +87,20 @@
 "budget.status.warning" = "Near limit";
 "budget.status.over" = "Over budget";
 
+// MARK: - Add Budget Sheet
+"add_budget.title" = "Add Budget";
+"add_budget.amount_label" = "Amount";
+"add_budget.amount_error" = "Enter a valid amount greater than zero";
+"add_budget.category_label" = "Category";
+"add_budget.category_error" = "Choose a category";
+"add_budget.period_label" = "Budget Period";
+"add_budget.period.weekly" = "Weekly";
+"add_budget.period.monthly" = "Monthly";
+"add_budget.period.yearly" = "Yearly";
+"add_budget.error.duplicate" = "A budget for this category and period already exists";
+"add_budget.error.generic" = "Couldn't save budget. Please try again";
+"add_budget.added" = "Budget added ✓";
+
 // MARK: - Analytics Screen
 "analytics.title" = "Analytics";
 "analytics.trend" = "Spending trend";
