@@ -41,51 +41,96 @@ enum AppearanceMode: String, CaseIterable {
 // MARK: - ProfileView
 
 struct ProfileView: View {
-    
-    // MARK: - الحالة
-    
+
+    // MARK: - State
+
     @AppStorage("appearance_mode") private var appearanceModeRaw = AppearanceMode.system.rawValue
     @AppStorage("face_id_enabled") private var faceIDEnabled = true
     @AppStorage("app_lock_enabled") private var appLockEnabled = false
     @AppStorage("notif_payment")  private var notifPayment  = true
     @AppStorage("notif_budget")   private var notifBudget   = true
     @AppStorage("notif_monthly")  private var notifMonthly  = false
-    
+
+    /// User's display name — shared with HomeView via AppStorage
+    @AppStorage("spendly_user_name") private var userName = ""
+
     @Binding var colorScheme: AppearanceMode
-    
+
     @Environment(LocalizationManager.self) private var locManager
-    
-    // MARK: - الواجهة
-    
+
+    // MARK: - Body
+
     var body: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 0) {
-                
-                // ── عنوان الصفحة ─────────────────────────────
+
                 Text(locManager.localize("profile.title"))
                     .font(SpendlyFont.largeTitle)
                     .padding(.horizontal, SpendlySpacing.xl)
                     .padding(.top, 8)
-                
-                // ── قسم التفضيلات ─────────────────────────────
+
+                // User identity card
+                userIdentitySection
+                    .padding(.top, SpendlySpacing.lg)
+
                 sectionHeader(locManager.localize("profile.preferences"))
                 preferencesSection
-                
-                // ── قسم الأمان ────────────────────────────────
+
                 sectionHeader(locManager.localize("profile.security"))
                 securitySection
-                
-                // ── قسم الإشعارات ─────────────────────────────
+
                 sectionHeader(locManager.localize("profile.notifications"))
                 notificationsSection
-                
-                // ── قسم البيانات ──────────────────────────────
+
                 sectionHeader(locManager.localize("profile.data"))
                 dataSection
                     .padding(.bottom, SpendlySpacing.xxl)
             }
         }
         .background(Color.spBackground)
+    }
+
+    // MARK: - User Identity Section
+
+    private var userIdentitySection: some View {
+        SpendlyCard {
+            HStack(spacing: SpendlySpacing.lg) {
+                // Avatar circle — shows initials or person emoji
+                Circle()
+                    .fill(Color.spAccentSurface)
+                    .frame(width: 56, height: 56)
+                    .overlay(
+                        Group {
+                            if let initial = userName.first {
+                                Text(String(initial).uppercased())
+                                    .font(.system(size: 22, weight: .bold))
+                                    .foregroundStyle(Color.spAccent)
+                            } else {
+                                Text("👤")
+                                    .font(.system(size: 24))
+                            }
+                        }
+                    )
+
+                // Editable name field
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(locManager.localize("profile.your_name"))
+                        .font(SpendlyFont.caption)
+                        .foregroundStyle(Color.spMuted)
+
+                    TextField(
+                        locManager.localize("profile.name_placeholder"),
+                        text: $userName
+                    )
+                    .font(SpendlyFont.bodyLarge)
+                    .fontWeight(.semibold)
+                    .foregroundStyle(Color.spForeground)
+                    .submitLabel(.done)
+                }
+            }
+        }
+        .padding(.horizontal, SpendlySpacing.xl)
+        .padding(.bottom, SpendlySpacing.sm)
     }
     
     // MARK: - قسم التفضيلات
