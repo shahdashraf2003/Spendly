@@ -2,14 +2,10 @@
 //  HomeViewModel.swift
 //  Spendly
 //
-//  ViewModel الشاشة الرئيسية
-//
-//  مسؤوليته:
-//  - جلب الملخص المالي (الرصيد، الدخل، المصروفات)
-//  - جلب آخر المعاملات
-//  - جلب حالة كل ميزانية
-//
-//  ملاحظة: يستخدم نفس الـ UseCases الموجودة في AppContainer
+//  Responsibilities:
+//  - Fetch financial summary (balance, income, expenses) from ALL transactions
+//  - Provide recent transactions (last 5) for the home screen list
+//  - Fetch budgets and categories for spending breakdown
 //
 
 import Foundation
@@ -18,65 +14,55 @@ import Observation
 @MainActor
 @Observable
 final class HomeViewModel {
-    
-    // MARK: - الاعتماديات (Use Cases)
-    
+
+    // MARK: - Dependencies
+
     private let fetchTransactionsUseCase: FetchTransactionsUseCase
     private let fetchBudgetsUseCase: FetchBudgetsUseCase
     private let fetchCategoriesUseCase: FetchCategoriesUseCase
-    
-    // MARK: - البيانات المعروضة
-    
-    /// آخر 4 معاملات (للصفحة الرئيسية)
+
+    // MARK: - State
+
+    /// All transactions — used for accurate totals and analytics
+    private(set) var allTransactions: [Transaction] = []
+
+    /// Last 5 transactions shown on the home screen list
     private(set) var recentTransactions: [Transaction] = []
-    
-    /// كل الميزانيات
+
     private(set) var budgets: [Budget] = []
-    
-    /// كل الفئات
     private(set) var categories: [Category] = []
-    
-    /// هل البيانات قيد التحميل؟
     private(set) var isLoading = false
-    
-    /// رسالة الخطأ (إن وُجدت)
     private(set) var errorMessage: String?
-    
-    // MARK: - القيم المحسوبة (Computed Properties)
-    
-    /// إجمالي الدخل
+
+    // MARK: - Computed Totals (from ALL transactions, not just recent)
+
     var totalIncome: Decimal {
-        recentTransactions
+        allTransactions
             .filter { $0.type == .income }
             .reduce(0) { $0 + $1.amount }
     }
-    
-    /// إجمالي المصروفات
+
     var totalExpenses: Decimal {
-        recentTransactions
+        allTransactions
             .filter { $0.type == .expense }
             .reduce(0) { $0 + $1.amount }
     }
-    
-    /// الرصيد الصافي
+
     var netBalance: Decimal {
         totalIncome - totalExpenses
     }
-    
-    /// نسبة الإنفاق الكلي (من الميزانية الكلية)
-    var overallSpendingPercentage: Double {
-        let totalBudget = budgets.reduce(Decimal(0)) { $0 + $1.amount }
-        guard totalBudget > 0 else { return 0 }
-        return Double(truncating: (totalExpenses / totalBudget * 100) as NSDecimalNumber)
-    }
-    
-    /// إجمالي الميزانية
+
     var totalBudget: Decimal {
         budgets.reduce(0) { $0 + $1.amount }
     }
-    
-    // MARK: - التهيئة
-    
+
+    var overallSpendingPercentage: Double {
+        guard totalBudget > 0 else { return 0 }
+        return Double(truncating: (totalExpenses / totalBudget * 100) as NSDecimalNumber)
+    }
+
+    // MARK: - Init
+
     init(
         fetchTransactionsUseCase: FetchTransactionsUseCase,
         fetchBudgetsUseCase: FetchBudgetsUseCase,
@@ -86,43 +72,39 @@ final class HomeViewModel {
         self.fetchBudgetsUseCase = fetchBudgetsUseCase
         self.fetchCategoriesUseCase = fetchCategoriesUseCase
     }
-    
-    // MARK: - الدوال
-    
-    /// احمِل كل البيانات عند فتح الشاشة
+
+    // MARK: - Load
+
     func loadData() {
         isLoading = true
         errorMessage = nil
-        
+
         defer { isLoading = false }
-        
+
         do {
-            // جلب آخر 4 معاملات مرتبة بالتاريخ
-            let allTransactions = try fetchTransactionsUseCase.execute()
-            recentTransactions = Array(
-                allTransactions
-                    .sorted { $0.date > $1.date }
-                    .prefix(4)
-            )
-            
-            // جلب الميزانيات والفئات
+            let sorted = try fetchTransactionsUseCase.execute()
+                .sorted { $0.date > $1.date }
+
+            allTransactions  = sorted
+            recentTransactions = Array(sorted.prefix(5))
+
             budgets    = try fetchBudgetsUseCase.execute()
             categories = try fetchCategoriesUseCase.execute()
-            
         } catch {
             errorMessage = "Couldn't load data. Please try again."
         }
     }
-    
-    /// ابحث عن الفئة بمعرّفها
+
+    // MARK: - Helpers
+
     func category(for id: UUID?) -> Category? {
         guard let id else { return nil }
         return categories.first { $0.id == id }
     }
-    
-    /// احسب المصروف لفئة معينة
+
+    /// Expense total for a specific category across ALL transactions
     func spent(for categoryID: UUID) -> Decimal {
-        recentTransactions
+        allTransactions
             .filter { $0.type == .expense && $0.categoryID == categoryID }
             .reduce(0) { $0 + $1.amount }
     }

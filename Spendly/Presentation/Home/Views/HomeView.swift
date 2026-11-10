@@ -2,15 +2,15 @@
 //  HomeView.swift
 //  Spendly
 //
-//  الشاشة الرئيسية لتطبيق Spendly
+//  Home screen for the Spendly app.
 //
-//  تحتوي على:
-//  1. رأس الصفحة (التحية + الشهر الحالي)
-//  2. بطاقة الرصيد الكلي
-//  3. أزرار الإجراءات السريعة
-//  4. بطاقة نظرة على الإنفاق (مع شريط تقدم)
-//  5. الإنفاق حسب الفئة
-//  6. آخر المعاملات
+//  Sections:
+//  1. Header (greeting + notification bell + avatar)
+//  2. Balance card
+//  3. Quick actions (Add Expense, Add Income, Analytics)
+//  4. Spending overview (progress bar vs. budget)
+//  5. Spending by category
+//  6. Recent transactions (with See All)
 //
 
 import SwiftUI
@@ -18,55 +18,61 @@ import SwiftUI
 // MARK: - HomeView
 
 struct HomeView: View {
-    
-    // MARK: - الخصائص
-    
-    /// ViewModel الخاص بالشاشة الرئيسية
+
+    // MARK: - Properties
+
     @State var viewModel: HomeViewModel
-    
+
+    /// Shared TransactionsViewModel — needed for the add-transaction sheet
+    @State var transactionsViewModel: TransactionsViewModel
+
+    /// All available categories (provided by ContentView)
+    let categories: [Category]
+
+    /// Called when the user taps "See All" in recent transactions → switch to Transactions tab
+    var onSeeAll: () -> Void
+
+    /// Called when the user taps the notification bell or avatar → switch to Profile tab
+    var onOpenProfile: () -> Void
+
     @Environment(LocalizationManager.self) private var locManager
-    
-    /// هل نافذة إضافة معاملة مفتوحة؟
+
+    // MARK: - Local State
+
     @State private var showAddTransaction = false
-    
-    /// نوع المعاملة عند الإضافة (مصروف أو دخل)
     @State private var addTransactionType: TransactionType = .expense
-    
-    /// الـ Toast — الإشعار السريع
+    @State private var showAnalytics = false
     @State private var toastMessage: String?
-    
-    // MARK: - الواجهة الرئيسية
-    
+
+    /// Stored user name (shared with ProfileView via AppStorage)
+    @AppStorage("spendly_user_name") private var userName = ""
+
+    // MARK: - Body
+
     var body: some View {
         ScrollView {
             LazyVStack(alignment: .leading, spacing: 0) {
-                
-                // ── رأس الصفحة ───────────────────────────────────
+
                 headerSection
                     .padding(.horizontal, SpendlySpacing.xl)
                     .padding(.top, 8)
-                
-                // ── بطاقة الرصيد ─────────────────────────────────
+
                 balanceCard
                     .padding(.horizontal, SpendlySpacing.xl)
                     .padding(.top, 16)
-                
-                // ── الإجراءات السريعة ─────────────────────────────
+
                 quickActionsSection
                     .padding(.horizontal, SpendlySpacing.xl)
                     .padding(.top, 14)
-                
-                // ── نظرة على الإنفاق ─────────────────────────────
+
                 spendingOverviewSection
                     .padding(.horizontal, SpendlySpacing.xl)
                     .padding(.top, 22)
-                
-                // ── الإنفاق حسب الفئة ────────────────────────────
+
                 categoriesSection
                     .padding(.horizontal, SpendlySpacing.xl)
                     .padding(.top, 22)
-                
-                // ── آخر المعاملات ────────────────────────────────
+
                 recentTransactionsSection
                     .padding(.horizontal, SpendlySpacing.xl)
                     .padding(.top, 22)
@@ -74,72 +80,110 @@ struct HomeView: View {
             }
         }
         .background(Color.spBackground)
-        .toast(message: $toastMessage)  // إشعار Toast في الأعلى
+        .toast(message: $toastMessage)
         .task {
             viewModel.loadData()
         }
+        // Add Expense / Add Income sheet
         .sheet(isPresented: $showAddTransaction) {
-            Text(locManager.localize("general.coming_soon"))
-                .padding()
+            AddTransactionSheet(
+                viewModel: transactionsViewModel,
+                categories: categories,
+                initialType: addTransactionType
+            ) { message in
+                toastMessage = message
+                viewModel.loadData()
+                DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                    toastMessage = nil
+                }
+            }
+            .environment(locManager)
+            .layoutDirection(for: locManager)
+        }
+        // Analytics push navigation
+        .navigationDestination(isPresented: $showAnalytics) {
+            AnalyticsView(
+                transactions: viewModel.allTransactions,
+                categories: viewModel.categories
+            )
+            .environment(locManager)
         }
     }
-    
-    // MARK: - رأس الصفحة
-    
+
+    // MARK: - Header
+
     private var headerSection: some View {
         HStack {
             VStack(alignment: .leading, spacing: 2) {
-                // الشهر والسنة
                 Text(Date().formatted(.dateTime.month(.wide).year()))
                     .font(SpendlyFont.caption)
                     .foregroundStyle(Color.spMuted)
-                
-                // التحية
-                Text(locManager.localize("home.greeting"))
+
+                Text(greetingText)
                     .font(.system(size: 20, weight: .bold))
                     .foregroundStyle(Color.spForeground)
             }
-            
+
             Spacer()
-            
+
             HStack(spacing: 12) {
-                // أيقونة الإشعارات
+                // Notification bell → opens Profile tab
                 Button {
-                    // TODO: فتح الإشعارات
+                    onOpenProfile()
                 } label: {
                     Image(systemName: "bell")
                         .font(.system(size: 18))
                         .foregroundStyle(Color.spForeground)
                 }
-                
-                // صورة المستخدم
-                Circle()
-                    .fill(Color.spAccentSurface)
-                    .frame(width: 38, height: 38)
-                    .overlay(Text("👤").font(.system(size: 18)))
+
+                // Avatar → opens Profile tab, shows initials when name is set
+                Button {
+                    onOpenProfile()
+                } label: {
+                    Circle()
+                        .fill(Color.spAccentSurface)
+                        .frame(width: 38, height: 38)
+                        .overlay(avatarContent)
+                }
             }
         }
     }
-    
-    // MARK: - بطاقة الرصيد الكلي
-    
+
+    /// "Good morning, Omar" or just "Good morning!" when no name is set
+    private var greetingText: String {
+        let prefix = locManager.localize("home.greeting_prefix")
+        return userName.isEmpty ? prefix : "\(prefix) \(userName)"
+    }
+
+    /// Shows first initial of the name, or the person emoji when no name is stored
+    @ViewBuilder
+    private var avatarContent: some View {
+        if let initial = userName.first {
+            Text(String(initial).uppercased())
+                .font(.system(size: 16, weight: .bold))
+                .foregroundStyle(Color.spAccent)
+        } else {
+            Text("👤")
+                .font(.system(size: 18))
+        }
+    }
+
+    // MARK: - Balance Card
+
     private var balanceCard: some View {
         SpendlyCard {
             VStack(alignment: .leading, spacing: 0) {
-                
-                // ── الرصيد الكلي ─────────────────────────────────
+
                 Text(locManager.localize("home.balance"))
                     .font(SpendlyFont.caption)
                     .foregroundStyle(Color.spMuted)
-                
+
                 Text(formatAmount(viewModel.netBalance))
                     .font(SpendlyFont.displayLarge)
                     .foregroundStyle(Color.spForeground)
                     .padding(.top, 2)
-                
-                // ── ملخص الدخل والمصروفات ─────────────────────
+
                 HStack(spacing: 0) {
-                    // الدخل ↓
                     VStack(alignment: .leading, spacing: 2) {
                         Text("↓ \(locManager.localize("home.income"))")
                             .font(SpendlyFont.caption)
@@ -149,10 +193,9 @@ struct HomeView: View {
                             .fontWeight(.bold)
                             .foregroundStyle(Color.spSuccess)
                     }
-                    
+
                     Spacer()
-                    
-                    // المصروفات ↑
+
                     VStack(alignment: .leading, spacing: 2) {
                         Text("↑ \(locManager.localize("home.expenses"))")
                             .font(SpendlyFont.caption)
@@ -162,10 +205,9 @@ struct HomeView: View {
                             .fontWeight(.bold)
                             .foregroundStyle(Color.spForeground)
                     }
-                    
+
                     Spacer()
-                    
-                    // الصافي
+
                     VStack(alignment: .leading, spacing: 2) {
                         Text(locManager.localize("home.net"))
                             .font(SpendlyFont.caption)
@@ -181,9 +223,9 @@ struct HomeView: View {
             }
         }
     }
-    
-    // MARK: - الإجراءات السريعة
-    
+
+    // MARK: - Quick Actions
+
     private var quickActionsSection: some View {
         HStack(spacing: 10) {
             QuickActionButton(icon: "➖", title: locManager.localize("add_transaction.type.expense")) {
@@ -195,25 +237,23 @@ struct HomeView: View {
                 showAddTransaction = true
             }
             QuickActionButton(icon: "📊", title: locManager.localize("home.analytics")) {
-                // TODO: فتح شاشة التحليلات
+                showAnalytics = true
             }
         }
     }
-    
-    // MARK: - نظرة على الإنفاق
-    
+
+    // MARK: - Spending Overview
+
     private var spendingOverviewSection: some View {
         VStack(alignment: .leading, spacing: SpendlySpacing.sm) {
             Text(locManager.localize("home.spending_overview"))
                 .font(SpendlyFont.sectionTitle)
-            
+
             let pct = viewModel.overallSpendingPercentage
             let status = BudgetStatus.from(percentage: pct)
-            
+
             SpendlyCard {
                 VStack(alignment: .leading, spacing: SpendlySpacing.sm) {
-                    
-                    // المصروف من الإجمالي
                     HStack {
                         Text(formatAmount(viewModel.totalExpenses))
                             .font(SpendlyFont.body)
@@ -221,20 +261,17 @@ struct HomeView: View {
                         + Text(" \(locManager.localize("home.of")) \(formatAmount(viewModel.totalBudget))")
                             .font(SpendlyFont.body)
                             .foregroundStyle(Color.spMuted)
-                        
+
                         Spacer()
-                        
-                        // الـ Pill
+
                         StatusPill(status: status, percentage: pct)
                     }
-                    
-                    // شريط التقدم
+
                     BudgetProgressBar(
                         spent: viewModel.totalExpenses,
                         total: viewModel.totalBudget > 0 ? viewModel.totalBudget : 1
                     )
-                    
-                    // المتبقي
+
                     Text("\(formatAmount(viewModel.totalBudget - viewModel.totalExpenses)) \(locManager.localize("home.left"))")
                         .font(SpendlyFont.caption)
                         .foregroundStyle(Color.spMuted)
@@ -242,14 +279,14 @@ struct HomeView: View {
             }
         }
     }
-    
-    // MARK: - الإنفاق حسب الفئة
-    
+
+    // MARK: - Categories Breakdown
+
     private var categoriesSection: some View {
         VStack(alignment: .leading, spacing: SpendlySpacing.sm) {
             Text(locManager.localize("home.categories_breakdown"))
                 .font(SpendlyFont.sectionTitle)
-            
+
             SpendlyCard {
                 VStack(spacing: SpendlySpacing.sm) {
                     ForEach(viewModel.categories.filter { $0.type == .expense }) { cat in
@@ -266,8 +303,7 @@ struct HomeView: View {
                                 .fontWeight(.bold)
                         }
                     }
-                    
-                    // إذا لم توجد فئات
+
                     if viewModel.categories.isEmpty {
                         Text(locManager.localize("general.empty_categories"))
                             .font(SpendlyFont.body)
@@ -277,16 +313,17 @@ struct HomeView: View {
             }
         }
     }
-    
-    // MARK: - آخر المعاملات
-    
+
+    // MARK: - Recent Transactions
+
     private var recentTransactionsSection: some View {
         VStack(alignment: .leading, spacing: SpendlySpacing.sm) {
             SectionHeaderView(
                 title: locManager.localize("home.recent_transactions"),
-                showSeeAll: !viewModel.recentTransactions.isEmpty
+                showSeeAll: !viewModel.recentTransactions.isEmpty,
+                onSeeAll: onSeeAll
             )
-            
+
             if viewModel.recentTransactions.isEmpty {
                 SpendlyCard {
                     EmptyStateView(
@@ -305,8 +342,7 @@ struct HomeView: View {
                             )
                             .padding(.horizontal, 12)
                             .padding(.vertical, 12)
-                            
-                            // فاصل بين الصفوف (ليس بعد الأخير)
+
                             if index < viewModel.recentTransactions.count - 1 {
                                 Divider()
                                     .padding(.leading, 68)
@@ -317,17 +353,15 @@ struct HomeView: View {
             }
         }
     }
-    
-    // MARK: - الدوال المساعدة
-    
-    /// تنسيق المبلغ بالجنيه المصري
+
+    // MARK: - Helpers
+
     private func formatAmount(_ amount: Decimal) -> String {
         let abs = amount < 0 ? -amount : amount
         let formatted = abs.formatted(.number.precision(.fractionLength(0)))
         return "\(formatted) \(locManager.localize("general.currency"))"
     }
-    
-    /// تنسيق المبلغ مع الإشارة (+ أو -)
+
     private func formatSigned(_ amount: Decimal) -> String {
         let sign = amount >= 0 ? "+" : "−"
         let abs = amount < 0 ? -amount : amount
@@ -335,5 +369,3 @@ struct HomeView: View {
         return "\(sign)\(formatted) \(locManager.localize("general.currency"))"
     }
 }
-
-

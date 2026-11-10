@@ -54,11 +54,11 @@ struct ContentView: View {
 
                 NavigationStack {
                     HomeView(
-                        viewModel: HomeViewModel(
-                            fetchTransactionsUseCase: appContainer.fetchTransactionsUseCase,
-                            fetchBudgetsUseCase: appContainer.fetchBudgetsUseCase,
-                            fetchCategoriesUseCase: appContainer.fetchCategoriesUseCase
-                        )
+                        viewModel: appContainer.homeViewModel,
+                        transactionsViewModel: appContainer.transactionsViewModel,
+                        categories: categories,
+                        onSeeAll: { selectedTab = .transactions },
+                        onOpenProfile: { selectedTab = .profile }
                     )
                 }
                 .tag(AppTab.home)

@@ -34,6 +34,7 @@
 
 // MARK: - Home Screen
 "home.greeting" = "Good morning, Omar";
+"home.greeting_prefix" = "Good morning,";
 "home.balance" = "Total Balance";
 "home.income" = "Income";
 "home.expenses" = "Expenses";
@@ -114,6 +115,8 @@
 
 // MARK: - Profile Screen
 "profile.title" = "Profile";
+"profile.your_name" = "Your Name";
+"profile.name_placeholder" = "Enter your name";
 "profile.preferences" = "Preferences";
 "profile.currency" = "Currency";
 "profile.language" = "Language";

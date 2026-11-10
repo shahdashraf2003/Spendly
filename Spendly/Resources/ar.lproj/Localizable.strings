@@ -34,6 +34,7 @@
 
 // MARK: - الشاشة الرئيسية
 "home.greeting" = "صباح الخير، عمر";
+"home.greeting_prefix" = "صباح الخير،";
 "home.balance" = "الرصيد الإجمالي";
 "home.income" = "الدخل";
 "home.expenses" = "المصروفات";
@@ -114,6 +115,8 @@
 
 // MARK: - شاشة الملف الشخصي
 "profile.title" = "حسابي";
+"profile.your_name" = "اسمك";
+"profile.name_placeholder" = "أدخل اسمك";
 "profile.preferences" = "التفضيلات";
 "profile.currency" = "العملة";
 "profile.language" = "اللغة";
