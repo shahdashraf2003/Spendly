@@ -183,3 +183,17 @@
 "data.import_success" = "تم استيراد %d معاملة، %d ميزانية، و%d فئة";
 "data.import_nothing_new" = "كل العناصر في النسخة الاحتياطية موجودة بالفعل";
 "data.import_error" = "تعذّر استيراد الملف. تأكد من أنه ملف JSON صالح من Spendly.";
+
+// Currency note
+"profile.currency_note" = "يغيّر الرمز فقط — لا يتم تحويل المبالغ.";
+
+// Notification schedule hints
+"notif.payment.schedule" = "يُرسل يومياً في 8:00 مساءً";
+"notif.budget.schedule" = "يُرسل عند الوصول إلى 80% من الميزانية";
+"notif.monthly.schedule" = "يُرسل في أول كل شهر في 9:00 صباحاً";
+
+// Import description
+"profile.import_desc" = "استعادة البيانات من نسخة احتياطية JSON. لن يتم استبدال البيانات الموجودة.";
+
+// Lock screen cancel hint
+"lock.tap_to_retry" = "اضغط على زر الفتح للمحاولة مرة أخرى.";

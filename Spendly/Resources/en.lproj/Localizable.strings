@@ -183,3 +183,17 @@
 "data.import_success" = "Imported %d transactions, %d budgets, and %d categories";
 "data.import_nothing_new" = "All items in this backup already exist";
 "data.import_error" = "Couldn't import backup file. Make sure it's a valid Spendly JSON export.";
+
+// Currency note
+"profile.currency_note" = "Changes the symbol only — amounts are not converted.";
+
+// Notification schedule hints
+"notif.payment.schedule" = "Fires daily at 8:00 PM";
+"notif.budget.schedule" = "Fires when you reach 80% of a budget";
+"notif.monthly.schedule" = "Fires on the 1st of each month at 9:00 AM";
+
+// Import description
+"profile.import_desc" = "Restore from a Spendly JSON backup. Existing data will not be overwritten.";
+
+// Lock screen cancel hint
+"lock.tap_to_retry" = "Tap Unlock to try again.";
