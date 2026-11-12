@@ -197,3 +197,9 @@
 
 // Lock screen cancel hint
 "lock.tap_to_retry" = "Tap Unlock to try again.";
+
+// Budget delete
+"budget.delete.title" = "Delete Budget";
+"budget.delete.message" = "Are you sure you want to delete the %@ budget? This cannot be undone.";
+"budget.delete.confirm" = "Delete";
+"budget.delete.success" = "Budget deleted";

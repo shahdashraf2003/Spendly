@@ -30,6 +30,9 @@ struct BudgetsView: View {
     /// الفترة الزمنية المختارة للفلترة — شهري افتراضياً
     @State private var selectedPeriod: BudgetPeriod = .monthly
 
+    /// Budget pending confirmation before deletion
+    @State private var budgetToDelete: Budget?
+
     @Environment(LocalizationManager.self) private var locManager
     @Environment(SettingsManager.self) private var settingsManager
 
@@ -104,6 +107,30 @@ struct BudgetsView: View {
             }
             .environment(locManager)
             .environment(settingsManager)
+        }
+        // Delete confirmation alert
+        .alert(locManager.localize("budget.delete.title"), isPresented: Binding(
+            get: { budgetToDelete != nil },
+            set: { if !$0 { budgetToDelete = nil } }
+        )) {
+            Button(locManager.localize("budget.delete.confirm"), role: .destructive) {
+                if let budget = budgetToDelete {
+                    budgetsViewModel.deleteBudget(id: budget.id)
+                    budgetToDelete = nil
+                    toastMessage = locManager.localize("budget.delete.success")
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        toastMessage = nil
+                    }
+                }
+            }
+            Button(locManager.localize("general.cancel"), role: .cancel) {
+                budgetToDelete = nil
+            }
+        } message: {
+            if let budget = budgetToDelete,
+               let cat = category(for: budget.categoryID) {
+                Text(locManager.localize("budget.delete.message", args: cat.localizedName(using: locManager)))
+            }
         }
     }
 
@@ -186,6 +213,14 @@ struct BudgetsView: View {
                             spent: spentForCategory(budget.categoryID)
                         )
                         .padding(.horizontal, SpendlySpacing.xl)
+                        // Swipe left to reveal delete button
+                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                            Button(role: .destructive) {
+                                budgetToDelete = budget
+                            } label: {
+                                Label(locManager.localize("budget.delete.confirm"), systemImage: "trash")
+                            }
+                        }
                     }
                 }
             }
