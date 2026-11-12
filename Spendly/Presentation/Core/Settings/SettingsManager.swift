@@ -194,7 +194,8 @@ final class SettingsManager {
             }
             return "security.biometric_unavailable"
         case .cancelled:
-            return nil
+            // Return a hint so the lock screen stays visible and shows a message
+            return "lock.tap_to_retry"
         case .failed:
             return "security.auth_failed"
         }

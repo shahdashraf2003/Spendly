@@ -22,14 +22,20 @@ struct LockScreenView: View {
             VStack(spacing: SpendlySpacing.xxl) {
                 Spacer()
 
-                Circle()
-                    .fill(Color.spAccentSurface)
-                    .frame(width: 84, height: 84)
-                    .overlay(
-                        Image(systemName: settingsManager.faceIDEnabled ? "faceid" : "lock.fill")
-                            .font(.system(size: 36, weight: .semibold))
-                            .foregroundStyle(Color.spAccent)
-                    )
+                // Lock icon — tapping also triggers authentication
+                Button {
+                    authenticate()
+                } label: {
+                    Circle()
+                        .fill(Color.spAccentSurface)
+                        .frame(width: 84, height: 84)
+                        .overlay(
+                            Image(systemName: settingsManager.faceIDEnabled ? "faceid" : "lock.fill")
+                                .font(.system(size: 36, weight: .semibold))
+                                .foregroundStyle(Color.spAccent)
+                        )
+                }
+                .buttonStyle(.plain)
 
                 VStack(spacing: SpendlySpacing.xs) {
                     Text(locManager.localize("lock.title"))
@@ -42,11 +48,14 @@ struct LockScreenView: View {
                         .multilineTextAlignment(.center)
                 }
 
+                // Show hint when cancelled, error when failed
                 if let errorKey {
+                    let isCancelHint = errorKey == "lock.tap_to_retry"
                     Text(locManager.localize(errorKey))
                         .font(SpendlyFont.caption)
-                        .foregroundStyle(Color.spDanger)
+                        .foregroundStyle(isCancelHint ? Color.spMuted : Color.spDanger)
                         .multilineTextAlignment(.center)
+                        .transition(.opacity)
                 }
 
                 Spacer()
@@ -62,6 +71,7 @@ struct LockScreenView: View {
             }
             .padding(.horizontal, SpendlySpacing.xl)
         }
+        // Automatically attempt authentication as soon as the lock screen appears
         .task {
             authenticate()
         }
@@ -76,7 +86,9 @@ struct LockScreenView: View {
             let failureKey = await settingsManager.unlock(
                 reason: locManager.localize("lock.auth_reason")
             )
-            errorKey = failureKey
+            withAnimation(.easeInOut(duration: 0.2)) {
+                errorKey = failureKey
+            }
             isAuthenticating = false
         }
     }
