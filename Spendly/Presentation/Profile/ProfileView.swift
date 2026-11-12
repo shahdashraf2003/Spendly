@@ -156,22 +156,30 @@ struct ProfileView: View {
     private var preferencesSection: some View {
         SpendlyCard(padding: 0) {
             VStack(spacing: 0) {
-                settingsRow(label: locManager.localize("profile.currency")) {
-                    Menu {
-                        ForEach(AppCurrency.allCases) { currency in
-                            Button {
-                                settingsManager.setCurrency(currency)
-                            } label: {
-                                if settingsManager.currency == currency {
-                                    Label(currency.displayName(using: locManager), systemImage: "checkmark")
-                                } else {
-                                    Text(currency.displayName(using: locManager))
+                VStack(alignment: .leading, spacing: 2) {
+                    settingsRow(label: locManager.localize("profile.currency")) {
+                        Menu {
+                            ForEach(AppCurrency.allCases) { currency in
+                                Button {
+                                    settingsManager.setCurrency(currency)
+                                } label: {
+                                    if settingsManager.currency == currency {
+                                        Label(currency.displayName(using: locManager), systemImage: "checkmark")
+                                    } else {
+                                        Text(currency.displayName(using: locManager))
+                                    }
                                 }
                             }
+                        } label: {
+                            menuLabel(settingsManager.currencySymbol(using: locManager))
                         }
-                    } label: {
-                        menuLabel(settingsManager.currencySymbol(using: locManager))
                     }
+                    // Bug 1 fix: clarify that currency change is symbol-only
+                    Text(locManager.localize("profile.currency_note"))
+                        .font(SpendlyFont.caption)
+                        .foregroundStyle(Color.spMuted)
+                        .padding(.horizontal, SpendlySpacing.lg)
+                        .padding(.bottom, SpendlySpacing.sm)
                 }
 
                 Divider().padding(.leading, SpendlySpacing.lg)
@@ -261,50 +269,80 @@ struct ProfileView: View {
     private var notificationsSection: some View {
         SpendlyCard(padding: 0) {
             VStack(spacing: 0) {
-                settingsRow(label: locManager.localize("profile.notif.payment_reminders")) {
-                    Toggle(
-                        "",
-                        isOn: notificationBinding(
-                            for: .paymentReminder,
-                            get: { settingsManager.notifPayment },
-                            titleKey: "notif.payment.title",
-                            bodyKey: "notif.payment.body"
+                // Payment Reminders
+                VStack(alignment: .leading, spacing: 2) {
+                    settingsRow(label: locManager.localize("profile.notif.payment_reminders")) {
+                        Toggle(
+                            "",
+                            isOn: notificationBinding(
+                                for: .paymentReminder,
+                                get: { settingsManager.notifPayment },
+                                titleKey: "notif.payment.title",
+                                bodyKey: "notif.payment.body"
+                            )
                         )
-                    )
-                    .tint(Color.spSuccess)
-                    .labelsHidden()
+                        .tint(Color.spSuccess)
+                        .labelsHidden()
+                    }
+                    if settingsManager.notifPayment {
+                        Text(locManager.localize("notif.payment.schedule"))
+                            .font(SpendlyFont.caption)
+                            .foregroundStyle(Color.spMuted)
+                            .padding(.horizontal, SpendlySpacing.lg)
+                            .padding(.bottom, SpendlySpacing.sm)
+                    }
                 }
 
                 Divider().padding(.leading, SpendlySpacing.lg)
 
-                settingsRow(label: locManager.localize("profile.notif.budget_alerts")) {
-                    Toggle(
-                        "",
-                        isOn: notificationBinding(
-                            for: .budgetAlert,
-                            get: { settingsManager.notifBudget },
-                            titleKey: "notif.budget.title",
-                            bodyKey: "notif.budget.body"
+                // Budget Alerts
+                VStack(alignment: .leading, spacing: 2) {
+                    settingsRow(label: locManager.localize("profile.notif.budget_alerts")) {
+                        Toggle(
+                            "",
+                            isOn: notificationBinding(
+                                for: .budgetAlert,
+                                get: { settingsManager.notifBudget },
+                                titleKey: "notif.budget.title",
+                                bodyKey: "notif.budget.body"
+                            )
                         )
-                    )
-                    .tint(Color.spSuccess)
-                    .labelsHidden()
+                        .tint(Color.spSuccess)
+                        .labelsHidden()
+                    }
+                    if settingsManager.notifBudget {
+                        Text(locManager.localize("notif.budget.schedule"))
+                            .font(SpendlyFont.caption)
+                            .foregroundStyle(Color.spMuted)
+                            .padding(.horizontal, SpendlySpacing.lg)
+                            .padding(.bottom, SpendlySpacing.sm)
+                    }
                 }
 
                 Divider().padding(.leading, SpendlySpacing.lg)
 
-                settingsRow(label: locManager.localize("profile.notif.monthly_summary")) {
-                    Toggle(
-                        "",
-                        isOn: notificationBinding(
-                            for: .monthlySummary,
-                            get: { settingsManager.notifMonthly },
-                            titleKey: "notif.monthly.title",
-                            bodyKey: "notif.monthly.body"
+                // Monthly Summary
+                VStack(alignment: .leading, spacing: 2) {
+                    settingsRow(label: locManager.localize("profile.notif.monthly_summary")) {
+                        Toggle(
+                            "",
+                            isOn: notificationBinding(
+                                for: .monthlySummary,
+                                get: { settingsManager.notifMonthly },
+                                titleKey: "notif.monthly.title",
+                                bodyKey: "notif.monthly.body"
+                            )
                         )
-                    )
-                    .tint(Color.spSuccess)
-                    .labelsHidden()
+                        .tint(Color.spSuccess)
+                        .labelsHidden()
+                    }
+                    if settingsManager.notifMonthly {
+                        Text(locManager.localize("notif.monthly.schedule"))
+                            .font(SpendlyFont.caption)
+                            .foregroundStyle(Color.spMuted)
+                            .padding(.horizontal, SpendlySpacing.lg)
+                            .padding(.bottom, SpendlySpacing.sm)
+                    }
                 }
             }
         }
@@ -317,6 +355,7 @@ struct ProfileView: View {
     private var dataSection: some View {
         SpendlyCard(padding: 0) {
             VStack(spacing: 0) {
+                // Export
                 Button {
                     startExport()
                 } label: {
@@ -331,17 +370,26 @@ struct ProfileView: View {
 
                 Divider().padding(.leading, SpendlySpacing.lg)
 
-                Button {
-                    showImporter = true
-                } label: {
-                    settingsRow(label: locManager.localize("profile.import")) {
-                        Image(systemName: locManager.language.isRTL ? "chevron.left" : "chevron.right")
-                            .font(SpendlyFont.caption)
-                            .foregroundStyle(Color.spMuted)
+                // Import with inline description
+                VStack(alignment: .leading, spacing: 2) {
+                    Button {
+                        showImporter = true
+                    } label: {
+                        settingsRow(label: locManager.localize("profile.import")) {
+                            Image(systemName: locManager.language.isRTL ? "chevron.left" : "chevron.right")
+                                .font(SpendlyFont.caption)
+                                .foregroundStyle(Color.spMuted)
+                        }
+                        .contentShape(Rectangle())
                     }
-                    .contentShape(Rectangle())
+                    .buttonStyle(.plain)
+
+                    Text(locManager.localize("profile.import_desc"))
+                        .font(SpendlyFont.caption)
+                        .foregroundStyle(Color.spMuted)
+                        .padding(.horizontal, SpendlySpacing.lg)
+                        .padding(.bottom, SpendlySpacing.sm)
                 }
-                .buttonStyle(.plain)
             }
         }
         .padding(.horizontal, SpendlySpacing.xl)
