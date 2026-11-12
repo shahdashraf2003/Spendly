@@ -149,3 +149,37 @@
 "transactions.delete_confirm.title" = "حذف المعاملة؟";
 "transactions.delete_confirm.message" = "لا يمكن التراجع عن هذا الإجراء.";
 "transactions.delete_confirm.confirm" = "حذف";
+
+// MARK: - Settings Features
+"currency.egp" = "الجنيه المصري";
+"currency.usd" = "الدولار الأمريكي";
+"currency.eur" = "اليورو";
+"currency.sar" = "الريال السعودي";
+"currency.aed" = "الدرهم الإماراتي";
+"currency.gbp" = "الجنيه الإسترليني";
+
+"lock.title" = "التطبيق مقفل";
+"lock.subtitle" = "تحقق من هويتك للوصول إلى بياناتك المالية.";
+"lock.unlock_button" = "فتح القفل";
+"lock.auth_reason" = "افتح Spendly لعرض بياناتك المالية";
+"security.enable_reason" = "تحقق من هويتك لتفعيل قفل التطبيق";
+"security.biometric_unavailable" = "المصادقة الحيوية غير متوفرة على هذا الجهاز.";
+"security.auth_failed" = "فشلت المصادقة. حاول مرة أخرى.";
+
+"notif.permission_denied.title" = "الإشعارات معطّلة";
+"notif.permission_denied.message" = "فعّل الإشعارات من إعدادات iOS لتلقي التذكيرات وتنبيهات الميزانية.";
+"notif.open_settings" = "فتح الإعدادات";
+"notif.enabled" = "تم تفعيل الإشعار";
+"notif.disabled" = "تم إيقاف الإشعار";
+"notif.payment.title" = "تذكير المصروفات اليومي";
+"notif.payment.body" = "لا تنسَ تسجيل مصروفات اليوم في Spendly.";
+"notif.budget.title" = "تنبيه الميزانية";
+"notif.budget.body" = "لقد استخدمت %d%% من ميزانية %@.";
+"notif.monthly.title" = "الملخص الشهري جاهز";
+"notif.monthly.body" = "افتح Spendly لمراجعة ملخص إنفاقك للشهر الماضي.";
+
+"data.export_success" = "تم تصدير البيانات بنجاح";
+"data.export_error" = "تعذّر تصدير البيانات. حاول مرة أخرى.";
+"data.import_success" = "تم استيراد %d معاملة، %d ميزانية، و%d فئة";
+"data.import_nothing_new" = "كل العناصر في النسخة الاحتياطية موجودة بالفعل";
+"data.import_error" = "تعذّر استيراد الملف. تأكد من أنه ملف JSON صالح من Spendly.";
