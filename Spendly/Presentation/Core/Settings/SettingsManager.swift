@@ -8,7 +8,32 @@
 import Foundation
 import LocalAuthentication
 import Observation
+import SwiftUI
 import UserNotifications
+
+// MARK: - AppearanceMode
+
+enum AppearanceMode: String, CaseIterable {
+    case system = "system"
+    case light  = "light"
+    case dark   = "dark"
+
+    var locKey: String {
+        switch self {
+        case .system: return "profile.appearance.system"
+        case .light:  return "profile.appearance.light"
+        case .dark:   return "profile.appearance.dark"
+        }
+    }
+
+    var colorScheme: ColorScheme? {
+        switch self {
+        case .system: return nil
+        case .light:  return .light
+        case .dark:   return .dark
+        }
+    }
+}
 
 // MARK: - AppCurrency
 

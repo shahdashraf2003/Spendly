@@ -2,61 +2,44 @@
 //  ProfileView.swift
 //  Spendly
 //
-//  شاشة الملف الشخصي والإعدادات
-//
-//  تحتوي على:
-//  - التفضيلات (العملة، اللغة، المظهر)
-//  - الأمان (Face ID، قفل التطبيق)
-//  - الإشعارات (تذكيرات الدفع، تنبيهات الميزانية)
-//  - البيانات (تصدير، استيراد)
+//  Profile and Settings screen:
+//  - User identity card (avatar + editable name)
+//  - Preferences (Currency, Language, Appearance)
+//  - Security (Face ID, App Lock)
+//  - Notifications (Payment Reminders, Budget Alerts, Monthly Summary)
+//  - Data (JSON Export & Import)
 //
 
 import SwiftUI
-
-// MARK: - AppearanceMode
-// وضع المظهر
-
-enum AppearanceMode: String, CaseIterable {
-    case system = "system"
-    case light  = "light"
-    case dark   = "dark"
-    
-    var locKey: String {
-        switch self {
-        case .system: return "profile.appearance.system"
-        case .light:  return "profile.appearance.light"
-        case .dark:   return "profile.appearance.dark"
-        }
-    }
-    
-    var colorScheme: ColorScheme? {
-        switch self {
-        case .system: return nil
-        case .light:  return .light
-        case .dark:   return .dark
-        }
-    }
-}
+import UIKit
+import UniformTypeIdentifiers
 
 // MARK: - ProfileView
 
 struct ProfileView: View {
 
-    // MARK: - State
+    // MARK: - Dependencies
 
-    @AppStorage("appearance_mode") private var appearanceModeRaw = AppearanceMode.system.rawValue
-    @AppStorage("face_id_enabled") private var faceIDEnabled = true
-    @AppStorage("app_lock_enabled") private var appLockEnabled = false
-    @AppStorage("notif_payment")  private var notifPayment  = true
-    @AppStorage("notif_budget")   private var notifBudget   = true
-    @AppStorage("notif_monthly")  private var notifMonthly  = false
+    let appContainer: AppContainer
+    var onDataImported: () -> Void
 
-    /// User's display name — shared with HomeView via AppStorage
     @AppStorage("spendly_user_name") private var userName = ""
 
-    @Binding var colorScheme: AppearanceMode
-
     @Environment(LocalizationManager.self) private var locManager
+    @Environment(SettingsManager.self) private var settingsManager
+
+    // MARK: - Local State
+
+    @State private var toastMessage: String?
+
+    @State private var showExporter = false
+    @State private var exportDocument: SpendlyBackupDocument?
+    @State private var showImporter = false
+
+    @State private var showAlert = false
+    @State private var alertTitle = ""
+    @State private var alertMessage = ""
+    @State private var showSettingsButtonInAlert = false
 
     // MARK: - Body
 
@@ -69,7 +52,6 @@ struct ProfileView: View {
                     .padding(.horizontal, SpendlySpacing.xl)
                     .padding(.top, 8)
 
-                // User identity card
                 userIdentitySection
                     .padding(.top, SpendlySpacing.lg)
 
@@ -88,6 +70,44 @@ struct ProfileView: View {
             }
         }
         .background(Color.spBackground)
+        .toast(message: $toastMessage)
+        .fileExporter(
+            isPresented: $showExporter,
+            document: exportDocument,
+            contentType: .json,
+            defaultFilename: appContainer.dataBackupService.defaultExportFilename()
+        ) { result in
+            switch result {
+            case .success:
+                showToast(locManager.localize("data.export_success"))
+            case .failure:
+                presentErrorAlert(
+                    title: locManager.localize("profile.export"),
+                    message: locManager.localize("data.export_error")
+                )
+            }
+        }
+        .fileImporter(
+            isPresented: $showImporter,
+            allowedContentTypes: [.json],
+            allowsMultipleSelection: false
+        ) { result in
+            handleImportResult(result)
+        }
+        .alert(alertTitle, isPresented: $showAlert) {
+            if showSettingsButtonInAlert {
+                Button(locManager.localize("notif.open_settings")) {
+                    if let url = URL(string: UIApplication.openSettingsURLString) {
+                        UIApplication.shared.open(url)
+                    }
+                }
+                Button(locManager.localize("general.cancel"), role: .cancel) {}
+            } else {
+                Button(locManager.localize("general.ok"), role: .cancel) {}
+            }
+        } message: {
+            Text(alertMessage)
+        }
     }
 
     // MARK: - User Identity Section
@@ -95,7 +115,6 @@ struct ProfileView: View {
     private var userIdentitySection: some View {
         SpendlyCard {
             HStack(spacing: SpendlySpacing.lg) {
-                // Avatar circle — shows initials or person emoji
                 Circle()
                     .fill(Color.spAccentSurface)
                     .frame(width: 56, height: 56)
@@ -112,7 +131,6 @@ struct ProfileView: View {
                         }
                     )
 
-                // Editable name field
                 VStack(alignment: .leading, spacing: 2) {
                     Text(locManager.localize("profile.your_name"))
                         .font(SpendlyFont.caption)
@@ -132,56 +150,67 @@ struct ProfileView: View {
         .padding(.horizontal, SpendlySpacing.xl)
         .padding(.bottom, SpendlySpacing.sm)
     }
-    
-    // MARK: - قسم التفضيلات
-    
+
+    // MARK: - Preferences Section
+
     private var preferencesSection: some View {
         SpendlyCard(padding: 0) {
             VStack(spacing: 0) {
                 settingsRow(label: locManager.localize("profile.currency")) {
-                    Text(locManager.localize("general.currency")).foregroundStyle(Color.spMuted).font(SpendlyFont.body)
+                    Menu {
+                        ForEach(AppCurrency.allCases) { currency in
+                            Button {
+                                settingsManager.setCurrency(currency)
+                            } label: {
+                                if settingsManager.currency == currency {
+                                    Label(currency.displayName(using: locManager), systemImage: "checkmark")
+                                } else {
+                                    Text(currency.displayName(using: locManager))
+                                }
+                            }
+                        }
+                    } label: {
+                        menuLabel(settingsManager.currencySymbol(using: locManager))
+                    }
                 }
-                
+
                 Divider().padding(.leading, SpendlySpacing.lg)
-                
+
                 settingsRow(label: locManager.localize("profile.language")) {
                     Menu {
                         ForEach(AppLanguage.allCases, id: \.self) { lang in
-                            Button(lang.displayName) {
+                            Button {
                                 locManager.setLanguage(lang)
+                            } label: {
+                                if locManager.language == lang {
+                                    Label(lang.displayName, systemImage: "checkmark")
+                                } else {
+                                    Text(lang.displayName)
+                                }
                             }
                         }
                     } label: {
-                        HStack(spacing: SpendlySpacing.xs) {
-                            Text(locManager.language.displayName)
-                                .foregroundStyle(Color.spMuted)
-                                .font(SpendlyFont.body)
-                            Image(systemName: "chevron.up.chevron.down")
-                                .font(.caption)
-                                .foregroundStyle(Color.spMuted)
-                        }
+                        menuLabel(locManager.language.displayName)
                     }
                 }
-                
+
                 Divider().padding(.leading, SpendlySpacing.lg)
-                
-                // مفتاح المظهر
+
                 settingsRow(label: locManager.localize("profile.appearance")) {
                     Menu {
                         ForEach(AppearanceMode.allCases, id: \.self) { mode in
-                            Button(locManager.localize(mode.locKey)) {
-                                colorScheme = mode
+                            Button {
+                                settingsManager.setAppearanceMode(mode)
+                            } label: {
+                                if settingsManager.appearanceMode == mode {
+                                    Label(locManager.localize(mode.locKey), systemImage: "checkmark")
+                                } else {
+                                    Text(locManager.localize(mode.locKey))
+                                }
                             }
                         }
                     } label: {
-                        HStack(spacing: SpendlySpacing.xs) {
-                            Text(locManager.localize(colorScheme.locKey))
-                                .foregroundStyle(Color.spMuted)
-                                .font(SpendlyFont.body)
-                            Image(systemName: "chevron.up.chevron.down")
-                                .font(.caption)
-                                .foregroundStyle(Color.spMuted)
-                        }
+                        menuLabel(locManager.localize(settingsManager.appearanceMode.locKey))
                     }
                 }
             }
@@ -189,29 +218,28 @@ struct ProfileView: View {
         .padding(.horizontal, SpendlySpacing.xl)
         .padding(.bottom, SpendlySpacing.sm)
     }
-    
-    // MARK: - قسم الأمان
-    
+
+    // MARK: - Security Section
+
     private var securitySection: some View {
         SpendlyCard(padding: 0) {
             VStack(spacing: 0) {
                 settingsRow(label: "🔒 \(locManager.localize("profile.face_id"))") {
-                    Toggle("", isOn: $faceIDEnabled)
+                    Toggle("", isOn: faceIDBinding)
                         .tint(Color.spSuccess)
                         .labelsHidden()
                 }
-                
+
                 Divider().padding(.leading, SpendlySpacing.lg)
-                
+
                 settingsRow(label: locManager.localize("profile.app_lock")) {
-                    Toggle("", isOn: $appLockEnabled)
+                    Toggle("", isOn: appLockBinding)
                         .tint(Color.spSuccess)
                         .labelsHidden()
                 }
-                
+
                 Divider().padding(.leading, SpendlySpacing.lg)
-                
-                // نص توضيحي
+
                 VStack(alignment: .leading, spacing: 2) {
                     Text(locManager.localize("profile.face_id_title"))
                         .font(SpendlyFont.body)
@@ -220,61 +248,252 @@ struct ProfileView: View {
                         .font(SpendlyFont.caption)
                         .foregroundStyle(Color.spMuted)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(SpendlySpacing.lg)
             }
         }
         .padding(.horizontal, SpendlySpacing.xl)
         .padding(.bottom, SpendlySpacing.sm)
     }
-    
-    // MARK: - قسم الإشعارات
-    
+
+    // MARK: - Notifications Section
+
     private var notificationsSection: some View {
         SpendlyCard(padding: 0) {
             VStack(spacing: 0) {
                 settingsRow(label: locManager.localize("profile.notif.payment_reminders")) {
-                    Toggle("", isOn: $notifPayment).tint(Color.spSuccess).labelsHidden()
+                    Toggle(
+                        "",
+                        isOn: notificationBinding(
+                            for: .paymentReminder,
+                            get: { settingsManager.notifPayment },
+                            titleKey: "notif.payment.title",
+                            bodyKey: "notif.payment.body"
+                        )
+                    )
+                    .tint(Color.spSuccess)
+                    .labelsHidden()
                 }
+
                 Divider().padding(.leading, SpendlySpacing.lg)
-                
+
                 settingsRow(label: locManager.localize("profile.notif.budget_alerts")) {
-                    Toggle("", isOn: $notifBudget).tint(Color.spSuccess).labelsHidden()
+                    Toggle(
+                        "",
+                        isOn: notificationBinding(
+                            for: .budgetAlert,
+                            get: { settingsManager.notifBudget },
+                            titleKey: "notif.budget.title",
+                            bodyKey: "notif.budget.body"
+                        )
+                    )
+                    .tint(Color.spSuccess)
+                    .labelsHidden()
                 }
+
                 Divider().padding(.leading, SpendlySpacing.lg)
-                
+
                 settingsRow(label: locManager.localize("profile.notif.monthly_summary")) {
-                    Toggle("", isOn: $notifMonthly).tint(Color.spSuccess).labelsHidden()
+                    Toggle(
+                        "",
+                        isOn: notificationBinding(
+                            for: .monthlySummary,
+                            get: { settingsManager.notifMonthly },
+                            titleKey: "notif.monthly.title",
+                            bodyKey: "notif.monthly.body"
+                        )
+                    )
+                    .tint(Color.spSuccess)
+                    .labelsHidden()
                 }
             }
         }
         .padding(.horizontal, SpendlySpacing.xl)
         .padding(.bottom, SpendlySpacing.sm)
     }
-    
-    // MARK: - قسم البيانات
-    
+
+    // MARK: - Data Section
+
     private var dataSection: some View {
         SpendlyCard(padding: 0) {
             VStack(spacing: 0) {
-                settingsRow(label: locManager.localize("profile.export")) {
-                    Image(systemName: locManager.language.isRTL ? "chevron.left" : "chevron.right")
-                        .font(SpendlyFont.caption)
-                        .foregroundStyle(Color.spMuted)
+                Button {
+                    startExport()
+                } label: {
+                    settingsRow(label: locManager.localize("profile.export")) {
+                        Image(systemName: locManager.language.isRTL ? "chevron.left" : "chevron.right")
+                            .font(SpendlyFont.caption)
+                            .foregroundStyle(Color.spMuted)
+                    }
+                    .contentShape(Rectangle())
                 }
+                .buttonStyle(.plain)
+
                 Divider().padding(.leading, SpendlySpacing.lg)
-                
-                settingsRow(label: locManager.localize("profile.import")) {
-                    Image(systemName: locManager.language.isRTL ? "chevron.left" : "chevron.right")
-                        .font(SpendlyFont.caption)
-                        .foregroundStyle(Color.spMuted)
+
+                Button {
+                    showImporter = true
+                } label: {
+                    settingsRow(label: locManager.localize("profile.import")) {
+                        Image(systemName: locManager.language.isRTL ? "chevron.left" : "chevron.right")
+                            .font(SpendlyFont.caption)
+                            .foregroundStyle(Color.spMuted)
+                    }
+                    .contentShape(Rectangle())
                 }
+                .buttonStyle(.plain)
             }
         }
         .padding(.horizontal, SpendlySpacing.xl)
     }
-    
-    // MARK: - الدوال المساعدة
-    
+
+    // MARK: - Bindings
+
+    private var faceIDBinding: Binding<Bool> {
+        Binding(
+            get: { settingsManager.faceIDEnabled },
+            set: { newValue in
+                Task {
+                    if let errorKey = await settingsManager.toggleFaceID(
+                        newValue,
+                        reason: locManager.localize("security.enable_reason")
+                    ) {
+                        presentErrorAlert(
+                            title: locManager.localize("profile.face_id"),
+                            message: locManager.localize(errorKey)
+                        )
+                    }
+                }
+            }
+        )
+    }
+
+    private var appLockBinding: Binding<Bool> {
+        Binding(
+            get: { settingsManager.appLockEnabled },
+            set: { newValue in
+                Task {
+                    if let errorKey = await settingsManager.toggleAppLock(
+                        newValue,
+                        reason: locManager.localize("security.enable_reason")
+                    ) {
+                        presentErrorAlert(
+                            title: locManager.localize("profile.app_lock"),
+                            message: locManager.localize(errorKey)
+                        )
+                    }
+                }
+            }
+        )
+    }
+
+    private func notificationBinding(
+        for type: NotificationType,
+        get: @escaping () -> Bool,
+        titleKey: String,
+        bodyKey: String
+    ) -> Binding<Bool> {
+        Binding(
+            get: get,
+            set: { newValue in
+                Task {
+                    let result = await settingsManager.toggleNotification(
+                        type,
+                        enabled: newValue,
+                        title: locManager.localize(titleKey),
+                        body: locManager.localize(bodyKey)
+                    )
+
+                    switch result {
+                    case .enabled:
+                        if type == .budgetAlert {
+                            appContainer.homeViewModel.loadData()
+                            settingsManager.checkBudgetAlerts(
+                                budgets: appContainer.homeViewModel.budgets,
+                                transactions: appContainer.homeViewModel.allTransactions,
+                                categories: appContainer.homeViewModel.categories,
+                                locManager: locManager
+                            )
+                        }
+                        showToast(locManager.localize("notif.enabled"))
+                    case .disabled:
+                        showToast(locManager.localize("notif.disabled"))
+                    case .permissionDenied:
+                        alertTitle = locManager.localize("notif.permission_denied.title")
+                        alertMessage = locManager.localize("notif.permission_denied.message")
+                        showSettingsButtonInAlert = true
+                        showAlert = true
+                    }
+                }
+            }
+        )
+    }
+
+    // MARK: - Backup Actions
+
+    private func startExport() {
+        do {
+            exportDocument = try appContainer.dataBackupService.exportDocument()
+            showExporter = true
+        } catch {
+            presentErrorAlert(
+                title: locManager.localize("profile.export"),
+                message: locManager.localize("data.export_error")
+            )
+        }
+    }
+
+    private func handleImportResult(_ result: Result<[URL], Error>) {
+        switch result {
+        case .success(let urls):
+            guard let url = urls.first else { return }
+            do {
+                let summary = try appContainer.dataBackupService.importBackup(from: url)
+
+                appContainer.transactionsViewModel.loadTransactions()
+                appContainer.budgetsViewModel.loadBudgets()
+                appContainer.homeViewModel.loadData()
+                onDataImported()
+
+                if summary.isEmpty {
+                    showToast(locManager.localize("data.import_nothing_new"))
+                } else {
+                    showToast(
+                        locManager.localize(
+                            "data.import_success",
+                            args: summary.transactionsAdded,
+                            summary.budgetsAdded,
+                            summary.categoriesAdded
+                        )
+                    )
+                }
+            } catch {
+                presentErrorAlert(
+                    title: locManager.localize("profile.import"),
+                    message: locManager.localize("data.import_error")
+                )
+            }
+        case .failure:
+            presentErrorAlert(
+                title: locManager.localize("profile.import"),
+                message: locManager.localize("data.import_error")
+            )
+        }
+    }
+
+    // MARK: - Helpers
+
+    private func menuLabel(_ value: String) -> some View {
+        HStack(spacing: SpendlySpacing.xs) {
+            Text(value)
+                .foregroundStyle(Color.spMuted)
+                .font(SpendlyFont.body)
+            Image(systemName: "chevron.up.chevron.down")
+                .font(.caption)
+                .foregroundStyle(Color.spMuted)
+        }
+    }
+
     private func sectionHeader(_ title: String) -> some View {
         Text(title)
             .font(SpendlyFont.caption)
@@ -283,7 +502,7 @@ struct ProfileView: View {
             .padding(.top, SpendlySpacing.lg)
             .padding(.bottom, SpendlySpacing.sm)
     }
-    
+
     private func settingsRow<Trailing: View>(
         label: String,
         @ViewBuilder trailing: () -> Trailing
@@ -296,5 +515,21 @@ struct ProfileView: View {
             trailing()
         }
         .padding(SpendlySpacing.lg)
+    }
+
+    private func showToast(_ message: String) {
+        toastMessage = message
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.5) {
+            if toastMessage == message {
+                toastMessage = nil
+            }
+        }
+    }
+
+    private func presentErrorAlert(title: String, message: String) {
+        alertTitle = title
+        alertMessage = message
+        showSettingsButtonInAlert = false
+        showAlert = true
     }
 }
