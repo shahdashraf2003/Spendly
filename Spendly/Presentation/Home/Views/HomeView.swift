@@ -36,6 +36,7 @@ struct HomeView: View {
     var onOpenProfile: () -> Void
 
     @Environment(LocalizationManager.self) private var locManager
+    @Environment(SettingsManager.self) private var settingsManager
 
     // MARK: - Local State
 
@@ -83,6 +84,12 @@ struct HomeView: View {
         .toast(message: $toastMessage)
         .task {
             viewModel.loadData()
+            settingsManager.checkBudgetAlerts(
+                budgets: viewModel.budgets,
+                transactions: viewModel.allTransactions,
+                categories: viewModel.categories,
+                locManager: locManager
+            )
         }
         // Add Expense / Add Income sheet
         .sheet(isPresented: $showAddTransaction) {
@@ -93,11 +100,18 @@ struct HomeView: View {
             ) { message in
                 toastMessage = message
                 viewModel.loadData()
+                settingsManager.checkBudgetAlerts(
+                    budgets: viewModel.budgets,
+                    transactions: viewModel.allTransactions,
+                    categories: viewModel.categories,
+                    locManager: locManager
+                )
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                     toastMessage = nil
                 }
             }
             .environment(locManager)
+            .environment(settingsManager)
             .layoutDirection(for: locManager)
         }
         // Analytics push navigation
@@ -107,6 +121,7 @@ struct HomeView: View {
                 categories: viewModel.categories
             )
             .environment(locManager)
+            .environment(settingsManager)
         }
     }
 
@@ -359,13 +374,13 @@ struct HomeView: View {
     private func formatAmount(_ amount: Decimal) -> String {
         let abs = amount < 0 ? -amount : amount
         let formatted = abs.formatted(.number.precision(.fractionLength(0)))
-        return "\(formatted) \(locManager.localize("general.currency"))"
+        return "\(formatted) \(settingsManager.currencySymbol(using: locManager))"
     }
 
     private func formatSigned(_ amount: Decimal) -> String {
         let sign = amount >= 0 ? "+" : "−"
         let abs = amount < 0 ? -amount : amount
         let formatted = abs.formatted(.number.precision(.fractionLength(0)))
-        return "\(sign)\(formatted) \(locManager.localize("general.currency"))"
+        return "\(sign)\(formatted) \(settingsManager.currencySymbol(using: locManager))"
     }
 }

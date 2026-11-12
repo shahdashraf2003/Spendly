@@ -34,6 +34,7 @@ struct AnalyticsView: View {
     @State private var selectedPeriod = AnalyticsPeriod.month
     
     @Environment(LocalizationManager.self) private var locManager
+    @Environment(SettingsManager.self) private var settingsManager
     
 
     private var expensesByCategory: [(Category, Decimal)] {
@@ -280,6 +281,6 @@ struct AnalyticsView: View {
     
     private func formatAmount(_ amount: Decimal) -> String {
         let abs = amount < 0 ? -amount : amount
-        return "\(abs.formatted(.number.precision(.fractionLength(0)))) \(locManager.localize("general.currency"))"
+        return "\(abs.formatted(.number.precision(.fractionLength(0)))) \(settingsManager.currencySymbol(using: locManager))"
     }
 }

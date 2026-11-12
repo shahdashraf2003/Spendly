@@ -31,6 +31,7 @@ struct TransactionRow: View {
     var onTap: (() -> Void)?
     
     @Environment(LocalizationManager.self) private var locManager
+    @Environment(SettingsManager.self) private var settingsManager
     
     // MARK: - الواجهة
     
@@ -84,7 +85,7 @@ struct TransactionRow: View {
     private var amountText: String {
         let sign = transaction.type == .income ? "+" : "−"
         let formatted = transaction.amount.formatted(.number.precision(.fractionLength(0)))
-        return "\(sign)\(formatted) \(locManager.localize("general.currency"))"
+        return "\(sign)\(formatted) \(settingsManager.currencySymbol(using: locManager))"
     }
 }
 

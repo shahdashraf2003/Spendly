@@ -31,6 +31,7 @@ struct BudgetsView: View {
     @State private var selectedPeriod: BudgetPeriod = .monthly
 
     @Environment(LocalizationManager.self) private var locManager
+    @Environment(SettingsManager.self) private var settingsManager
 
     // MARK: - الميزانيات المفلترة
 
@@ -102,6 +103,7 @@ struct BudgetsView: View {
                 }
             }
             .environment(locManager)
+            .environment(settingsManager)
         }
     }
 
@@ -221,6 +223,6 @@ struct BudgetsView: View {
 
     private func formatAmount(_ amount: Decimal) -> String {
         let abs = amount < 0 ? -amount : amount
-        return "\(abs.formatted(.number.precision(.fractionLength(0)))) \(locManager.localize("general.currency"))"
+        return "\(abs.formatted(.number.precision(.fractionLength(0)))) \(settingsManager.currencySymbol(using: locManager))"
     }
 }

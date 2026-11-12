@@ -11,6 +11,7 @@ import SwiftData
 @main
 struct SpendlyApp: App {
     @State private var locManager = LocalizationManager()
+    @State private var settingsManager = SettingsManager()
 
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
@@ -31,6 +32,7 @@ struct SpendlyApp: App {
         WindowGroup {
             AppRootView()
                 .environment(locManager)
+                .environment(settingsManager)
                 .layoutDirection(for: locManager)
                 .id(locManager.language)
         }
