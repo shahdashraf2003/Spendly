@@ -1,0 +1,205 @@
+/* ===================================================
+   Localizable.strings — English
+   Spendly iOS App
+   
+   هذا الملف يحتوي على كل النصوص بالإنجليزية
+   كل مفتاح (key) له نظير بالعربي في ar.lproj/Localizable.strings
+   =================================================== */
+
+// MARK: - General
+"app.name" = "Spendly";
+"general.cancel" = "Cancel";
+"general.done" = "Done";
+"general.delete" = "Delete";
+"general.save" = "Save";
+"general.edit" = "Edit";
+"general.back" = "Back";
+"general.close" = "Close";
+"general.add" = "Add";
+"general.ok" = "OK";
+"general.see_all" = "See All";
+"general.currency" = "EGP";
+"general.transaction" = "Transaction";
+"general.empty_categories" = "No categories yet";
+"general.coming_soon" = "Coming soon";
+"general.error.loading_data" = "Couldn't load data. Please try again.";
+"general.amount" = "Amount";
+"general.no_data" = "No data";
+
+// MARK: - Tab Bar
+"tab.home" = "Home";
+"tab.transactions" = "Transactions";
+"tab.budgets" = "Budgets";
+"tab.profile" = "Profile";
+
+// MARK: - Home Screen
+"home.greeting" = "Good morning, Omar";
+"home.greeting_prefix" = "Good morning,";
+"home.balance" = "Total Balance";
+"home.income" = "Income";
+"home.expenses" = "Expenses";
+"home.net" = "Net";
+"home.spending_overview" = "Spending Overview";
+"home.of" = "of";
+"home.left" = "left";
+"home.used" = "used";
+"home.categories_breakdown" = "Spending by Category";
+"home.recent_transactions" = "Recent Transactions";
+"home.add_expense" = "Add Expense";
+"home.add_income" = "Add Income";
+"home.analytics" = "Analytics";
+
+// MARK: - Transactions Screen
+"transactions.title" = "Transactions";
+"transactions.search" = "Search";
+"transactions.filter.all" = "All";
+"transactions.filter.income" = "Income";
+"transactions.filter.expense" = "Expense";
+"transactions.empty.title" = "No transactions found";
+"transactions.empty.subtitle" = "Try another search or filter.";
+"transactions.empty.no_transactions" = "Tap + to add your first transaction";
+"transactions.today" = "Today";
+"transactions.yesterday" = "Yesterday";
+"transactions.added" = "Transaction added";
+"transactions.deleted" = "Transaction deleted";
+"transactions.detail_title" = "Transaction Details";
+"transactions.delete_button" = "Delete Transaction";
+
+// MARK: - Add Transaction Sheet
+"add_transaction.title" = "Add Transaction";
+"add_transaction.amount_placeholder" = "0";
+"add_transaction.amount_error" = "Enter a valid amount";
+"add_transaction.category_label" = "Category";
+"add_transaction.category_error" = "Choose a category";
+"add_transaction.note_placeholder" = "Note (optional)";
+"add_transaction.date_label" = "Date";
+"add_transaction.type.expense" = "Expense";
+"add_transaction.type.income" = "Income";
+
+// MARK: - Budgets Screen
+"budgets.title" = "Budgets";
+"budgets.total" = "Total Budget";
+"budgets.spent" = "Spent";
+"budgets.remaining" = "Remaining";
+"budgets.add" = "Add Budget";
+"budgets.empty.title" = "No budgets yet";
+"budgets.empty.subtitle" = "Tap the button below to add your first budget";
+"budget.status.ok" = "Within budget";
+"budget.status.warning" = "Near limit";
+"budget.status.over" = "Over budget";
+
+// MARK: - Add Budget Sheet
+"add_budget.title" = "Add Budget";
+"add_budget.amount_label" = "Amount";
+"add_budget.amount_error" = "Enter a valid amount greater than zero";
+"add_budget.category_label" = "Category";
+"add_budget.category_error" = "Choose a category";
+"add_budget.period_label" = "Budget Period";
+"add_budget.period.weekly" = "Weekly";
+"add_budget.period.monthly" = "Monthly";
+"add_budget.period.yearly" = "Yearly";
+"add_budget.error.duplicate" = "A budget for this category and period already exists";
+"add_budget.error.generic" = "Couldn't save budget. Please try again";
+"add_budget.added" = "Budget added ✓";
+
+// MARK: - Analytics Screen
+"analytics.title" = "Analytics";
+"analytics.trend" = "Spending trend";
+"analytics.breakdown" = "Category breakdown";
+"analytics.net_savings" = "Net Savings";
+"analytics.avg_daily" = "Avg. daily spend";
+"analytics.insight" = "Food is your largest category at 37% of spending.";
+"analytics.period.week" = "Week";
+"analytics.period.month" = "Month";
+"analytics.period.year" = "Year";
+
+// MARK: - Profile Screen
+"profile.title" = "Profile";
+"profile.your_name" = "Your Name";
+"profile.name_placeholder" = "Enter your name";
+"profile.preferences" = "Preferences";
+"profile.currency" = "Currency";
+"profile.language" = "Language";
+"profile.appearance" = "Appearance";
+"profile.appearance.dark" = "Dark";
+"profile.appearance.light" = "Light";
+"profile.appearance.system" = "System";
+"profile.security" = "Security";
+"profile.face_id" = "Face ID";
+"profile.app_lock" = "App Lock";
+"profile.face_id_title" = "Protect Your Finances";
+"profile.face_id_desc" = "Use Face ID to keep your financial information private.";
+"profile.notifications" = "Notifications";
+"profile.notif.payment_reminders" = "Payment Reminders";
+"profile.notif.budget_alerts" = "Budget Alerts";
+"profile.notif.monthly_summary" = "Monthly Summary";
+"profile.data" = "Data";
+"profile.export" = "Export Data";
+"profile.import" = "Import Data";
+
+// MARK: - Categories
+"category.food" = "Food";
+"category.shopping" = "Shopping";
+"category.transport" = "Transportation";
+"category.bills" = "Bills";
+"category.entertainment" = "Entertainment";
+"category.income" = "Income";
+"category.other" = "Other";
+
+"transactions.delete_confirm.title" = "Delete Transaction?";
+"transactions.delete_confirm.message" = "This action cannot be undone.";
+"transactions.delete_confirm.confirm" = "Delete";
+
+// MARK: - Settings Features
+"currency.egp" = "Egyptian Pound";
+"currency.usd" = "US Dollar";
+"currency.eur" = "Euro";
+"currency.sar" = "Saudi Riyal";
+"currency.aed" = "UAE Dirham";
+"currency.gbp" = "British Pound";
+
+"lock.title" = "Spendly is Locked";
+"lock.subtitle" = "Authenticate to access your finances.";
+"lock.unlock_button" = "Unlock";
+"lock.auth_reason" = "Unlock Spendly to view your financial data";
+"security.enable_reason" = "Verify your identity to enable App Lock";
+"security.biometric_unavailable" = "Biometric authentication is not available on this device.";
+"security.auth_failed" = "Authentication failed. Please try again.";
+
+"notif.permission_denied.title" = "Notifications Disabled";
+"notif.permission_denied.message" = "Enable notifications in iOS Settings to receive reminders and budget alerts.";
+"notif.open_settings" = "Open Settings";
+"notif.enabled" = "Notification enabled";
+"notif.disabled" = "Notification disabled";
+"notif.payment.title" = "Daily Expense Reminder";
+"notif.payment.body" = "Don't forget to log today's expenses in Spendly.";
+"notif.budget.title" = "Budget Alert";
+"notif.budget.body" = "You have used %d%% of your %@ budget.";
+"notif.monthly.title" = "Monthly Summary Ready";
+"notif.monthly.body" = "Open Spendly to review your spending summary from last month.";
+
+"data.export_success" = "Data exported successfully";
+"data.export_error" = "Couldn't export data. Please try again.";
+"data.import_success" = "Imported %d transactions, %d budgets, and %d categories";
+"data.import_nothing_new" = "All items in this backup already exist";
+"data.import_error" = "Couldn't import backup file. Make sure it's a valid Spendly JSON export.";
+
+// Currency note
+"profile.currency_note" = "Changes the symbol only — amounts are not converted.";
+
+// Notification schedule hints
+"notif.payment.schedule" = "Fires daily at 8:00 PM";
+"notif.budget.schedule" = "Fires when you reach 80% of a budget";
+"notif.monthly.schedule" = "Fires on the 1st of each month at 9:00 AM";
+
+// Import description
+"profile.import_desc" = "Restore from a Spendly JSON backup. Existing data will not be overwritten.";
+
+// Lock screen cancel hint
+"lock.tap_to_retry" = "Tap Unlock to try again.";
+
+// Budget delete
+"budget.delete.title" = "Delete Budget";
+"budget.delete.message" = "Are you sure you want to delete the %@ budget? This cannot be undone.";
+"budget.delete.confirm" = "Delete";
+"budget.delete.success" = "Budget deleted";

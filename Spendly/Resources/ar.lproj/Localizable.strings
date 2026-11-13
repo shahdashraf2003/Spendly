@@ -1,0 +1,205 @@
+/* ===================================================
+   Localizable.strings — العربية
+   تطبيق Spendly
+   
+   هذا الملف يحتوي على كل النصوص بالعربية
+   كل مفتاح (key) له نظير بالإنجليزية في en.lproj/Localizable.strings
+   =================================================== */
+
+// MARK: - عام
+"app.name" = "سبندلي";
+"general.cancel" = "إلغاء";
+"general.done" = "تم";
+"general.delete" = "حذف";
+"general.save" = "حفظ";
+"general.edit" = "تعديل";
+"general.back" = "رجوع";
+"general.close" = "إغلاق";
+"general.add" = "إضافة";
+"general.ok" = "حسناً";
+"general.see_all" = "عرض الكل";
+"general.currency" = "ج.م";
+"general.transaction" = "معاملة";
+"general.empty_categories" = "لا توجد فئات بعد";
+"general.coming_soon" = "قريباً";
+"general.error.loading_data" = "تعذّر تحميل البيانات. حاول مرة أخرى.";
+"general.amount" = "المبلغ";
+"general.no_data" = "لا توجد بيانات";
+
+// MARK: - شريط التبويب
+"tab.home" = "الرئيسية";
+"tab.transactions" = "المعاملات";
+"tab.budgets" = "الميزانيات";
+"tab.profile" = "حسابي";
+
+// MARK: - الشاشة الرئيسية
+"home.greeting" = "صباح الخير، عمر";
+"home.greeting_prefix" = "صباح الخير،";
+"home.balance" = "الرصيد الإجمالي";
+"home.income" = "الدخل";
+"home.expenses" = "المصروفات";
+"home.net" = "الصافي";
+"home.spending_overview" = "نظرة على الإنفاق";
+"home.of" = "من";
+"home.left" = "متبقي";
+"home.used" = "مستخدم";
+"home.categories_breakdown" = "الإنفاق حسب الفئة";
+"home.recent_transactions" = "أحدث المعاملات";
+"home.add_expense" = "إضافة مصروف";
+"home.add_income" = "إضافة دخل";
+"home.analytics" = "التحليلات";
+
+// MARK: - شاشة المعاملات
+"transactions.title" = "المعاملات";
+"transactions.search" = "بحث";
+"transactions.filter.all" = "الكل";
+"transactions.filter.income" = "الدخل";
+"transactions.filter.expense" = "المصروف";
+"transactions.empty.title" = "لا توجد معاملات";
+"transactions.empty.subtitle" = "جرّب بحثًا أو فلترًا آخر.";
+"transactions.empty.no_transactions" = "اضغط + لإضافة أول معاملة";
+"transactions.today" = "اليوم";
+"transactions.yesterday" = "أمس";
+"transactions.added" = "تمت إضافة المعاملة";
+"transactions.deleted" = "تم حذف المعاملة";
+"transactions.detail_title" = "تفاصيل المعاملة";
+"transactions.delete_button" = "حذف المعاملة";
+
+// MARK: - شيت إضافة معاملة
+"add_transaction.title" = "إضافة معاملة";
+"add_transaction.amount_placeholder" = "0";
+"add_transaction.amount_error" = "أدخل مبلغًا صحيحًا";
+"add_transaction.category_label" = "الفئة";
+"add_transaction.category_error" = "اختر فئة";
+"add_transaction.note_placeholder" = "ملاحظة (اختياري)";
+"add_transaction.date_label" = "التاريخ";
+"add_transaction.type.expense" = "مصروف";
+"add_transaction.type.income" = "دخل";
+
+// MARK: - شاشة الميزانيات
+"budgets.title" = "الميزانيات";
+"budgets.total" = "إجمالي الميزانية";
+"budgets.spent" = "المصروف";
+"budgets.remaining" = "المتبقي";
+"budgets.add" = "إضافة ميزانية";
+"budgets.empty.title" = "لا توجد ميزانيات";
+"budgets.empty.subtitle" = "اضغط الزر أدناه لإضافة أول ميزانية";
+"budget.status.ok" = "ضمن الميزانية";
+"budget.status.warning" = "قريب من الحد";
+"budget.status.over" = "تجاوز الميزانية";
+
+// MARK: - شيت إضافة ميزانية
+"add_budget.title" = "إضافة ميزانية";
+"add_budget.amount_label" = "المبلغ";
+"add_budget.amount_error" = "أدخل مبلغًا صحيحًا أكبر من صفر";
+"add_budget.category_label" = "الفئة";
+"add_budget.category_error" = "اختر فئة";
+"add_budget.period_label" = "فترة الميزانية";
+"add_budget.period.weekly" = "أسبوعية";
+"add_budget.period.monthly" = "شهرية";
+"add_budget.period.yearly" = "سنوية";
+"add_budget.error.duplicate" = "توجد ميزانية لهذه الفئة والفترة بالفعل";
+"add_budget.error.generic" = "تعذّر حفظ الميزانية. حاول مرة أخرى";
+"add_budget.added" = "تمت إضافة الميزانية ✓";
+
+// MARK: - شاشة التحليلات
+"analytics.title" = "التحليلات";
+"analytics.trend" = "اتجاه الإنفاق";
+"analytics.breakdown" = "توزيع الفئات";
+"analytics.net_savings" = "صافي المدخرات";
+"analytics.avg_daily" = "متوسط الإنفاق اليومي";
+"analytics.insight" = "الطعام أكبر فئة إنفاق بنسبة 37٪.";
+"analytics.period.week" = "أسبوع";
+"analytics.period.month" = "شهر";
+"analytics.period.year" = "سنة";
+
+// MARK: - شاشة الملف الشخصي
+"profile.title" = "حسابي";
+"profile.your_name" = "اسمك";
+"profile.name_placeholder" = "أدخل اسمك";
+"profile.preferences" = "التفضيلات";
+"profile.currency" = "العملة";
+"profile.language" = "اللغة";
+"profile.appearance" = "المظهر";
+"profile.appearance.dark" = "داكن";
+"profile.appearance.light" = "فاتح";
+"profile.appearance.system" = "تلقائي";
+"profile.security" = "الأمان";
+"profile.face_id" = "Face ID";
+"profile.app_lock" = "قفل التطبيق";
+"profile.face_id_title" = "احمِ أموالك";
+"profile.face_id_desc" = "استخدم Face ID للحفاظ على خصوصية معلوماتك المالية.";
+"profile.notifications" = "الإشعارات";
+"profile.notif.payment_reminders" = "تذكير الدفعات";
+"profile.notif.budget_alerts" = "تنبيهات الميزانية";
+"profile.notif.monthly_summary" = "الملخص الشهري";
+"profile.data" = "البيانات";
+"profile.export" = "تصدير البيانات";
+"profile.import" = "استيراد البيانات";
+
+// MARK: - الفئات
+"category.food" = "الطعام";
+"category.shopping" = "التسوق";
+"category.transport" = "المواصلات";
+"category.bills" = "الفواتير";
+"category.entertainment" = "الترفيه";
+"category.income" = "الدخل";
+"category.other" = "أخرى";
+
+"transactions.delete_confirm.title" = "حذف المعاملة؟";
+"transactions.delete_confirm.message" = "لا يمكن التراجع عن هذا الإجراء.";
+"transactions.delete_confirm.confirm" = "حذف";
+
+// MARK: - Settings Features
+"currency.egp" = "الجنيه المصري";
+"currency.usd" = "الدولار الأمريكي";
+"currency.eur" = "اليورو";
+"currency.sar" = "الريال السعودي";
+"currency.aed" = "الدرهم الإماراتي";
+"currency.gbp" = "الجنيه الإسترليني";
+
+"lock.title" = "التطبيق مقفل";
+"lock.subtitle" = "تحقق من هويتك للوصول إلى بياناتك المالية.";
+"lock.unlock_button" = "فتح القفل";
+"lock.auth_reason" = "افتح Spendly لعرض بياناتك المالية";
+"security.enable_reason" = "تحقق من هويتك لتفعيل قفل التطبيق";
+"security.biometric_unavailable" = "المصادقة الحيوية غير متوفرة على هذا الجهاز.";
+"security.auth_failed" = "فشلت المصادقة. حاول مرة أخرى.";
+
+"notif.permission_denied.title" = "الإشعارات معطّلة";
+"notif.permission_denied.message" = "فعّل الإشعارات من إعدادات iOS لتلقي التذكيرات وتنبيهات الميزانية.";
+"notif.open_settings" = "فتح الإعدادات";
+"notif.enabled" = "تم تفعيل الإشعار";
+"notif.disabled" = "تم إيقاف الإشعار";
+"notif.payment.title" = "تذكير المصروفات اليومي";
+"notif.payment.body" = "لا تنسَ تسجيل مصروفات اليوم في Spendly.";
+"notif.budget.title" = "تنبيه الميزانية";
+"notif.budget.body" = "لقد استخدمت %d%% من ميزانية %@.";
+"notif.monthly.title" = "الملخص الشهري جاهز";
+"notif.monthly.body" = "افتح Spendly لمراجعة ملخص إنفاقك للشهر الماضي.";
+
+"data.export_success" = "تم تصدير البيانات بنجاح";
+"data.export_error" = "تعذّر تصدير البيانات. حاول مرة أخرى.";
+"data.import_success" = "تم استيراد %d معاملة، %d ميزانية، و%d فئة";
+"data.import_nothing_new" = "كل العناصر في النسخة الاحتياطية موجودة بالفعل";
+"data.import_error" = "تعذّر استيراد الملف. تأكد من أنه ملف JSON صالح من Spendly.";
+
+// Currency note
+"profile.currency_note" = "يغيّر الرمز فقط — لا يتم تحويل المبالغ.";
+
+// Notification schedule hints
+"notif.payment.schedule" = "يُرسل يومياً في 8:00 مساءً";
+"notif.budget.schedule" = "يُرسل عند الوصول إلى 80% من الميزانية";
+"notif.monthly.schedule" = "يُرسل في أول كل شهر في 9:00 صباحاً";
+
+// Import description
+"profile.import_desc" = "استعادة البيانات من نسخة احتياطية JSON. لن يتم استبدال البيانات الموجودة.";
+
+// Lock screen cancel hint
+"lock.tap_to_retry" = "اضغط على زر الفتح للمحاولة مرة أخرى.";
+
+// Budget delete
+"budget.delete.title" = "حذف الميزانية";
+"budget.delete.message" = "هل أنت متأكد من حذف ميزانية %@؟ لا يمكن التراجع عن هذا الإجراء.";
+"budget.delete.confirm" = "حذف";
+"budget.delete.success" = "تم حذف الميزانية";
