@@ -213,8 +213,8 @@ struct BudgetsView: View {
                             spent: spentForCategory(budget.categoryID)
                         )
                         .padding(.horizontal, SpendlySpacing.xl)
-                        // Swipe left to reveal delete button
-                        .swipeActions(edge: .trailing, allowsFullSwipe: false) {
+                        // Long-press context menu to delete (swipeActions requires List)
+                        .contextMenu {
                             Button(role: .destructive) {
                                 budgetToDelete = budget
                             } label: {
