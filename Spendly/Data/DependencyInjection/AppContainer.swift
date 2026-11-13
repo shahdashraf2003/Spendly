@@ -33,9 +33,19 @@ final class AppContainer {
 	let transactionsViewModel: TransactionsViewModel
 	let categoriesViewModel: CategoriesViewModel
 	let budgetsViewModel: BudgetsViewModel
-	
+
 	/// ViewModel الشاشة الرئيسية — يجمع البيانات من كل الـ UseCases
 	let homeViewModel: HomeViewModel
+
+	let dataBackupService: DataBackupService
+
+	/// Factory لإنشاء AddBudgetViewModel — يُستدعى في كل مرة يُفتح فيها الشيت
+	func makeAddBudgetViewModel() -> AddBudgetViewModel {
+		AddBudgetViewModel(
+			addBudgetUseCase: addBudgetUseCase,
+			fetchCategoriesUseCase: fetchCategoriesUseCase
+		)
+	}
 
     init(modelContext: ModelContext) {
         let transactionDataSource = TransactionLocalDataSource(
@@ -136,6 +146,15 @@ final class AppContainer {
 			fetchTransactionsUseCase: fetchTransactionsUseCase,
 			fetchBudgetsUseCase: fetchBudgetsUseCase,
 			fetchCategoriesUseCase: fetchCategoriesUseCase
+		)
+
+		self.dataBackupService = DataBackupService(
+			fetchCategoriesUseCase: fetchCategoriesUseCase,
+			addCategoryUseCase: addCategoryUseCase,
+			fetchBudgetsUseCase: fetchBudgetsUseCase,
+			addBudgetUseCase: addBudgetUseCase,
+			fetchTransactionsUseCase: fetchTransactionsUseCase,
+			addTransactionUseCase: addTransactionUseCase
 		)
     }
 }

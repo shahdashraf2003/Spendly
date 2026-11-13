@@ -37,12 +37,13 @@ struct ContentView: View {
 
     
     let appContainer: AppContainer
-    
+
     @Environment(LocalizationManager.self) private var locManager
+    @Environment(SettingsManager.self) private var settingsManager
+    @Environment(\.scenePhase) private var scenePhase
 
     @State private var selectedTab = AppTab.home
     @State private var showAddSheet = false
-    @State private var appearanceMode = AppearanceMode.system
     @State private var toastMessage: String?
     @State private var categories: [Category] = []
     
@@ -54,11 +55,11 @@ struct ContentView: View {
 
                 NavigationStack {
                     HomeView(
-                        viewModel: HomeViewModel(
-                            fetchTransactionsUseCase: appContainer.fetchTransactionsUseCase,
-                            fetchBudgetsUseCase: appContainer.fetchBudgetsUseCase,
-                            fetchCategoriesUseCase: appContainer.fetchCategoriesUseCase
-                        )
+                        viewModel: appContainer.homeViewModel,
+                        transactionsViewModel: appContainer.transactionsViewModel,
+                        categories: categories,
+                        onSeeAll: { selectedTab = .transactions },
+                        onOpenProfile: { selectedTab = .profile }
                     )
                 }
                 .tag(AppTab.home)
@@ -83,7 +84,8 @@ struct ContentView: View {
                     BudgetsView(
                         budgetsViewModel: appContainer.budgetsViewModel,
                         transactionsViewModel: appContainer.transactionsViewModel,
-                        categories: categories
+                        categories: categories,
+                        appContainer: appContainer
                     )
                 }
                 .tag(AppTab.budgets)
@@ -93,7 +95,10 @@ struct ContentView: View {
                 
 
                 NavigationStack {
-                    ProfileView(colorScheme: $appearanceMode)
+                    ProfileView(
+                        appContainer: appContainer,
+                        onDataImported: { loadCategories() }
+                    )
                 }
                 .tag(AppTab.profile)
                 .tabItem {
@@ -103,11 +108,21 @@ struct ContentView: View {
             .tint(Color.spAccent)
 
             addButton
+
+            if !settingsManager.isUnlocked {
+                LockScreenView()
+                    .transition(.opacity)
+            }
         }
-        .preferredColorScheme(appearanceMode.colorScheme)
+        .preferredColorScheme(settingsManager.appearanceMode.colorScheme)
         .toast(message: $toastMessage)
         .task {
             loadCategories()
+        }
+        .onChange(of: scenePhase) { _, newPhase in
+            if newPhase == .background {
+                settingsManager.lockIfNeeded()
+            }
         }
         .sheet(isPresented: $showAddSheet) {
             AddTransactionSheet(
@@ -116,11 +131,19 @@ struct ContentView: View {
             ) { message in
                 toastMessage = message
                 loadCategories()
+                appContainer.homeViewModel.loadData()
+                settingsManager.checkBudgetAlerts(
+                    budgets: appContainer.homeViewModel.budgets,
+                    transactions: appContainer.homeViewModel.allTransactions,
+                    categories: appContainer.homeViewModel.categories,
+                    locManager: locManager
+                )
                 DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                     toastMessage = nil
                 }
             }
             .environment(locManager)
+            .environment(settingsManager)
             .layoutDirection(for: locManager)
         }
     }
