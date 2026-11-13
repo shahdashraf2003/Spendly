@@ -86,6 +86,7 @@ struct BudgetSummaryCard: View {
     let spent: Decimal
     
     @Environment(LocalizationManager.self) private var locManager
+    @Environment(SettingsManager.self) private var settingsManager
     
     // MARK: - الحسابات
     
@@ -160,7 +161,7 @@ struct BudgetSummaryCard: View {
     
     private func amountText(_ amount: Decimal) -> String {
         let formatted = amount.formatted(.number.precision(.fractionLength(0)))
-        return "\(formatted) \(locManager.localize("general.currency"))"
+        return "\(formatted) \(settingsManager.currencySymbol(using: locManager))"
     }
     
     private func abs(_ value: Decimal) -> Decimal {

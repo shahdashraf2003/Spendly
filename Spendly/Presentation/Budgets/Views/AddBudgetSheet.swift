@@ -13,6 +13,7 @@ struct AddBudgetSheet: View {
 
     @Environment(\.dismiss) private var dismiss
     @Environment(LocalizationManager.self) private var locManager
+    @Environment(SettingsManager.self) private var settingsManager
 
     @State var viewModel: AddBudgetViewModel
     var onSuccess: (String) -> Void
@@ -70,7 +71,7 @@ struct AddBudgetSheet: View {
 
         VStack(spacing: SpendlySpacing.xs) {
             HStack(spacing: SpendlySpacing.sm) {
-                Text(locManager.localize("general.currency"))
+                Text(settingsManager.currencySymbol(using: locManager))
                     .font(.system(size: 28, weight: .bold, design: .rounded))
                     .foregroundStyle(Color.spMuted)
 

@@ -9,6 +9,7 @@ struct TransactionDetailSheet: View {
 
     @Environment(\.dismiss) private var dismiss
     @Environment(LocalizationManager.self) private var locManager
+    @Environment(SettingsManager.self) private var settingsManager
 
     let transaction: Transaction
     let category: Category?
@@ -112,6 +113,6 @@ struct TransactionDetailSheet: View {
     private var signedAmount: String {
         let sign = transaction.type == .income ? "+" : "−"
         let formatted = transaction.amount.formatted(.number.precision(.fractionLength(0)))
-        return "\(sign)\(formatted) \(locManager.localize("general.currency"))"
+        return "\(sign)\(formatted) \(settingsManager.currencySymbol(using: locManager))"
     }
 }

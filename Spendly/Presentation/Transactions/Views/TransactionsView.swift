@@ -30,6 +30,7 @@ struct TransactionsView: View {
 
     @State var viewModel: TransactionsViewModel
     @Environment(LocalizationManager.self) private var locManager
+    @Environment(SettingsManager.self) private var settingsManager
 
 
     let categories: [Category]
@@ -109,6 +110,7 @@ struct TransactionsView: View {
                 clearToast()
             }
             .environment(locManager)
+            .environment(settingsManager)
             .layoutDirection(for: locManager)
         }
 
@@ -122,6 +124,7 @@ struct TransactionsView: View {
                 clearToast()
             }
             .environment(locManager)
+            .environment(settingsManager)
             .layoutDirection(for: locManager)
         }
     }

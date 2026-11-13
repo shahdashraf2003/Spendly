@@ -149,3 +149,57 @@
 "transactions.delete_confirm.title" = "Delete Transaction?";
 "transactions.delete_confirm.message" = "This action cannot be undone.";
 "transactions.delete_confirm.confirm" = "Delete";
+
+// MARK: - Settings Features
+"currency.egp" = "Egyptian Pound";
+"currency.usd" = "US Dollar";
+"currency.eur" = "Euro";
+"currency.sar" = "Saudi Riyal";
+"currency.aed" = "UAE Dirham";
+"currency.gbp" = "British Pound";
+
+"lock.title" = "Spendly is Locked";
+"lock.subtitle" = "Authenticate to access your finances.";
+"lock.unlock_button" = "Unlock";
+"lock.auth_reason" = "Unlock Spendly to view your financial data";
+"security.enable_reason" = "Verify your identity to enable App Lock";
+"security.biometric_unavailable" = "Biometric authentication is not available on this device.";
+"security.auth_failed" = "Authentication failed. Please try again.";
+
+"notif.permission_denied.title" = "Notifications Disabled";
+"notif.permission_denied.message" = "Enable notifications in iOS Settings to receive reminders and budget alerts.";
+"notif.open_settings" = "Open Settings";
+"notif.enabled" = "Notification enabled";
+"notif.disabled" = "Notification disabled";
+"notif.payment.title" = "Daily Expense Reminder";
+"notif.payment.body" = "Don't forget to log today's expenses in Spendly.";
+"notif.budget.title" = "Budget Alert";
+"notif.budget.body" = "You have used %d%% of your %@ budget.";
+"notif.monthly.title" = "Monthly Summary Ready";
+"notif.monthly.body" = "Open Spendly to review your spending summary from last month.";
+
+"data.export_success" = "Data exported successfully";
+"data.export_error" = "Couldn't export data. Please try again.";
+"data.import_success" = "Imported %d transactions, %d budgets, and %d categories";
+"data.import_nothing_new" = "All items in this backup already exist";
+"data.import_error" = "Couldn't import backup file. Make sure it's a valid Spendly JSON export.";
+
+// Currency note
+"profile.currency_note" = "Changes the symbol only — amounts are not converted.";
+
+// Notification schedule hints
+"notif.payment.schedule" = "Fires daily at 8:00 PM";
+"notif.budget.schedule" = "Fires when you reach 80% of a budget";
+"notif.monthly.schedule" = "Fires on the 1st of each month at 9:00 AM";
+
+// Import description
+"profile.import_desc" = "Restore from a Spendly JSON backup. Existing data will not be overwritten.";
+
+// Lock screen cancel hint
+"lock.tap_to_retry" = "Tap Unlock to try again.";
+
+// Budget delete
+"budget.delete.title" = "Delete Budget";
+"budget.delete.message" = "Are you sure you want to delete the %@ budget? This cannot be undone.";
+"budget.delete.confirm" = "Delete";
+"budget.delete.success" = "Budget deleted";
