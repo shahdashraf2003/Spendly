@@ -7,11 +7,30 @@
 
 import SwiftUI
 import SwiftData
+import UserNotifications
+
+// MARK: - Foreground Notification Delegate
+// Without this, iOS silently drops notifications while the app is open.
+// This tells iOS to show banner + sound even when Spendly is in the foreground.
+class SpendlyNotificationDelegate: NSObject, UNUserNotificationCenterDelegate {
+    func userNotificationCenter(
+        _ center: UNUserNotificationCenter,
+        willPresent notification: UNNotification,
+        withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void
+    ) {
+        completionHandler([.banner, .sound, .badge])
+    }
+}
 
 @main
 struct SpendlyApp: App {
     @State private var locManager = LocalizationManager()
     @State private var settingsManager = SettingsManager()
+    private let notificationDelegate = SpendlyNotificationDelegate()
+
+    init() {
+        UNUserNotificationCenter.current().delegate = notificationDelegate
+    }
 
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
